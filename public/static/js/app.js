@@ -222,9 +222,16 @@ const budgetDisplay = $('#budget-display');
 budgetInput?.addEventListener('input', () => {
   const val = parseFloat(budgetInput.value);
   if (!isNaN(val) && val > 0) {
-    budgetDisplay.textContent = `= ${formatINR(val)} total`;
+    if (val > 100000000) {
+      budgetDisplay.textContent = `= ${formatINR(val)} (Maximum allowed is ₹10 Crore / ₹10,00,00,000)`;
+      budgetDisplay.style.color = 'var(--color-error, #f87171)';
+    } else {
+      budgetDisplay.textContent = `= ${formatINR(val)} (₹${val.toLocaleString('en-IN')})`;
+      budgetDisplay.style.color = '';
+    }
   } else {
-    budgetDisplay.textContent = 'Enter your total budget';
+    budgetDisplay.textContent = 'Enter your total budget (₹1,000 to ₹10 Crore)';
+    budgetDisplay.style.color = '';
   }
 });
 
@@ -291,9 +298,15 @@ function validateStep(stepNum) {
       markError(guests, 'Guest count must be between 1 and 10,000.');
       valid = false;
     }
-    if (budget && (parseFloat(budget.value) < 1000)) {
-      markError(budget, 'Minimum budget is ₹1,000.');
-      valid = false;
+    if (budget) {
+      const budgetVal = parseFloat(budget.value);
+      if (isNaN(budgetVal) || budgetVal < 1000) {
+        markError(budget, 'Minimum budget is ₹1,000.');
+        valid = false;
+      } else if (budgetVal > 100000000) {
+        markError(budget, 'Maximum budget is ₹10 Crore (₹10,00,00,000).');
+        valid = false;
+      }
     }
   }
 
@@ -533,6 +546,7 @@ $('#event-form')?.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
+      hideLoading();
       const msg = extractErrorMessage(data, 'Failed to generate plan.');
       announce(msg, 'assertive');
       alert(`Error:\n${msg}`);
@@ -544,6 +558,7 @@ $('#event-form')?.addEventListener('submit', async (e) => {
     renderPlan(data);
 
   } catch (err) {
+    hideLoading();
     console.error('Plan generation failed:', err);
     const msg = extractErrorMessage(err, 'Network error. Please check your connection.');
     announce(msg, 'assertive');
