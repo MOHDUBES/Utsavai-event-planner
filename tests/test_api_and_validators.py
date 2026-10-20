@@ -52,6 +52,13 @@ class TestHealthEndpoint:
         data = res.json()
         assert "UtsavAI" in data["service"]
 
+    def test_vercel_entrypoint_app(self):
+        """Verify api.index exports a valid FastAPI app instance."""
+        from api.index import app as vercel_app
+
+        assert vercel_app is not None
+        assert vercel_app.title == "UtsavAI – Smart Celebration & Event Planner"
+
 
 class TestDemosEndpoint:
     """Tests for the demo scenarios endpoint."""

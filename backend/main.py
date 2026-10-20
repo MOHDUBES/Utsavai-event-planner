@@ -71,6 +71,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
+        allow_origin_regex=getattr(settings, "cors_origin_regex", None),
         allow_credentials=False,
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type", "Accept"],
@@ -109,13 +110,19 @@ def create_app() -> FastAPI:
     # ── API routes ─────────────────────────────────────────────
     app.include_router(router)
 
-    # ── Static frontend ────────────────────────────────────────
-    frontend_dir = Path(__file__).parent.parent / "frontend"
+    # ── Static frontend (public/ or fallback to frontend/) ──────
+    base_dir = Path(__file__).parent.parent
+    frontend_dir = base_dir / "public"
+    if not frontend_dir.exists():
+        frontend_dir = base_dir / "frontend"
+
     if frontend_dir.exists():
         assets_dir = frontend_dir / "assets"
         if assets_dir.exists():
             app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
-        app.mount("/static", StaticFiles(directory=str(frontend_dir / "static")), name="static")
+        static_dir = frontend_dir / "static"
+        if static_dir.exists():
+            app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
         @app.get("/", include_in_schema=False)
         async def serve_frontend():

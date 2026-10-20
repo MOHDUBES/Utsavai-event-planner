@@ -1,0 +1,34 @@
+# Vercel Deployment Ignore Rules
+# Exclude tests, docs, tooling, and cache from the serverless deployment bundle
+
+# Version control & local config
+.git
+.github
+.gitignore
+.agents
+.gemini
+
+# Tests & Coverage
+tests/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Documentation
+docs/
+
+# Development & Linting
+requirements-dev.txt
+ruff.toml
+pyproject.toml
+Makefile
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environment
+.env
+.env.local

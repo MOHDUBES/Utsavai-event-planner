@@ -6,6 +6,9 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](tests/)
+[![Vercel](https://img.shields.io/badge/deploy-Vercel-black.svg?logo=vercel)](https://utsavai-event-planner.vercel.app)
+
+> 🌐 **Live Demo:** [https://utsavai-event-planner.vercel.app](https://utsavai-event-planner.vercel.app) *(Deployment configured for Vercel Serverless)*
 
 ---
 
@@ -147,9 +150,47 @@ uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 ---
 
+## 🌐 Deployment (Vercel)
+
+UtsavAI is pre-configured for zero-friction serverless deployment on [Vercel](https://vercel.com):
+- **Static Frontend (`public/`):** Served globally from Vercel's Edge CDN with instant response times and zero server runtime.
+- **Python ASGI Backend (`api/index.py`):** Serverless function execution via FastAPI on Python 3.12 with `/api/*` rewrites defined in `vercel.json`.
+
+### Option 1: Deploy with Vercel CLI
+
+```bash
+# 1. Install Vercel CLI
+npm install -g vercel
+
+# 2. Deploy preview
+vercel
+
+# 3. Deploy to production
+vercel --prod
+```
+
+### Option 2: Deploy via GitHub Integration
+
+1. Push your repository to GitHub.
+2. Go to [vercel.com/new](https://vercel.com/new) and import `utsavai-event-planner`.
+3. Framework Preset: **Other**.
+4. Root Directory: `./` (default).
+5. Configure Environment Variables in Project Settings:
+   - `AI_PROVIDER`: `gemini` (or `none` for offline fallback)
+   - `GEMINI_API_KEY`: `your_gemini_api_key`
+   - `GEMINI_MODEL`: `gemini-2.5-flash`
+   - `CORS_ORIGINS`: `https://utsavai-event-planner.vercel.app`
+   - `CORS_ORIGIN_REGEX`: `^https://.*\.vercel\.app$`
+6. Click **Deploy**. Your app will be live within seconds!
+
+---
+
 ## 🧪 Testing
 
 ```bash
+# Install development and testing dependencies
+pip install -r requirements-dev.txt
+
 # Run all tests
 python -m pytest tests/ -v
 
@@ -167,11 +208,11 @@ make test-cov
 | `tests/test_budget_engine.py` | 31 tests | Season detection, city tiers, economy of scale, priority boosting, allocations |
 | `tests/test_timeline_engine.py` | 20 tests | Backward planning, compression (<30d), past dates, outdoor tasks, sequencing |
 | `tests/test_vendor_engine.py` | 12 tests | Event-type mapping, dietary preferences (Jain/Halal/Veg), lead times, costs |
-| `tests/test_api_and_validators.py` | 49 tests | REST endpoints, Pydantic schemas, security headers, rate limiting, error safety |
+| `tests/test_api_and_validators.py` | 50 tests | REST endpoints, Pydantic schemas, security headers, rate limiting, Vercel ASGI entrypoint |
 | `tests/test_ai_service.py` | 8 tests | Mocked LLM responses, malformed JSON fallback, timeouts, caching, injection scrubbing |
 | `tests/test_chat_assistant.py` | 3 tests | Engine re-run on decor cost cut, 2-week reschedule re-run, stateless plan context |
 | `tests/test_demo_scenarios.py` | 4 tests | Verification of all 3 demo scenarios (Delhi Wedding, Mumbai Birthday, Jaipur Mela) |
-| **Total** | **127 tests** | **100% passing, 85% statement coverage across core codebase** |
+| **Total** | **128 tests** | **100% passing, 85% statement coverage across core codebase** |
 
 #### Real Test Suite Execution Output
 
@@ -179,18 +220,18 @@ make test-cov
 ============================= test session starts =============================
 platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
 plugins: anyio-4.14.2, asyncio-1.4.0, cov-7.1.0
-collected 127 items
+collected 128 items
 
 tests/test_ai_service.py ........                                        [  6%]
 tests/test_api_and_validators.py ...................................     [ 33%]
-..............                                                           [ 44%]
+...............                                                          [ 45%]
 tests/test_budget_engine.py ...............................              [ 69%]
 tests/test_chat_assistant.py ...                                         [ 71%]
 tests/test_demo_scenarios.py ....                                        [ 74%]
 tests/test_timeline_engine.py ....................                       [ 90%]
 tests/test_vendor_engine.py ............                                 [100%]
 
-============================= 127 passed in ~9s ==============================
+============================= 128 passed in ~8s ==============================
 Statement coverage: 85%
 ```
 
@@ -289,7 +330,7 @@ UtsavAI features a custom, lightweight brand identity crafted entirely in hand-w
   - **Deep Maroon (`#7C2D12`):** Trustworthy, heritage Indian grounding
   - **Indigo (`#3730A3`):** Modern AI technology balance
   - **Cream (`#FFF7ED`):** Clean, warm celebration canvas
-- **Vector Assets (`frontend/assets/`):**
+- **Vector Assets (`public/assets/`):**
   - `logo.svg` / `logo-dark.svg`: Full brand wordmark with theme switching
   - `icon.svg`: App header emblem (64x64)
   - `favicon.svg`: Optimized 32x32 / 16x16 tab icon
@@ -306,13 +347,16 @@ UtsavAI features a custom, lightweight brand identity crafted entirely in hand-w
 
 ```
 utsavai-event-planner/
+├── api/
+│   ├── __init__.py
+│   └── index.py                 # Vercel serverless ASGI entrypoint (FastAPI)
 ├── backend/
 │   ├── __init__.py
 │   ├── config.py                # Top-level configuration facade (re-exports Settings)
 │   ├── main.py                  # FastAPI app factory, CORS, static mounts & security headers
 │   ├── api/
 │   │   ├── __init__.py
-│   │   └── routes.py            # REST endpoints (/plan, /chat, /demos)
+│   │   └── routes.py            # REST endpoints (/plan, /chat, /demos, /health)
 │   ├── models/
 │   │   ├── __init__.py
 │   │   └── schemas.py           # Pydantic request/response schemas & string sanitizers
@@ -327,7 +371,7 @@ utsavai-event-planner/
 │       ├── __init__.py
 │       └── config.py            # Pydantic settings model loaded from .env
 │                                # (backend/config.py exposes this as a clean facade)
-├── frontend/
+├── public/
 │   ├── index.html               # Single-page app with brand meta & bilingual i18n
 │   ├── manifest.webmanifest     # Web app manifest
 │   ├── assets/
@@ -358,11 +402,15 @@ utsavai-event-planner/
 │   └── branding.md              # Brand identity guide & usage rules
 ├── .env.example                 # Environment configuration template
 ├── .gitignore
+├── .python-version              # Python 3.12 pinned for Vercel
+├── .vercelignore                # Excludes tests/docs from serverless bundle
 ├── LICENSE                      # MIT (MOHD UBES)
 ├── Makefile
 ├── pyproject.toml               # Pytest + coverage configuration
-├── requirements.txt
+├── requirements.txt             # Minimal production runtime dependencies
+├── requirements-dev.txt         # Development & test dependencies (pytest, ruff)
 ├── ruff.toml                    # Linter & formatter settings
+├── vercel.json                  # Vercel routing & security headers config
 └── README.md
 ```
 
@@ -414,6 +462,7 @@ utsavai-event-planner/
 5. **LLM responses** are cached in-memory per process; cache is lost on server restart.
 6. **Sessions** are in-memory per process; use Redis in production for multi-instance setups.
 7. **Festival dates** are approximate and may shift by a day or two based on lunar calendar each year.
+8. **Serverless Execution (Vercel)**: When hosted on Vercel, API routes execute as ephemeral Python serverless functions. The client passes `previous_plan_context` during chat interactions so state is maintained statelessly across separate lambda invocations without relying on sticky server memory. In-memory caches and rate limits operate locally per lambda instance.
 
 ---
 
@@ -439,7 +488,7 @@ utsavai-event-planner/
 - [x] **Single branch** (`main` only)
 - [x] **Repo size < 10MB** (no node_modules, no large media, .gitignore included)
 - [x] **README complete** (architecture, setup, features, testing, security, assumptions)
-- [x] **Tests passing** (127 tests covering all engines, AI mocking, chat re-runs, and demo scenarios)
+- [x] **Tests passing** (128 tests covering all engines, AI mocking, chat re-runs, Vercel entrypoint, and demo scenarios)
 - [x] **Works without API key** (template fallback mode)
 - [x] **3 demo scenarios** (Wedding, Birthday, Diwali Mela)
 - [x] **Budget engine** (deterministic, city/season/priority aware)

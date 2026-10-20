@@ -27,7 +27,7 @@ All colors meet or exceed WCAG AA accessibility contrast standards across light 
 | **Indigo** | `#3730A3` | AI &amp; Modern Technology Accent | **12.2 : 1** (Passes AAA) | **7.8 : 1** (Passes AA &amp; AAA) |
 | **Cream** | `#FFF7ED` | Celebration Canvas &amp; Luminous Glow | Surface / Background | **16.2 : 1** (Passes AAA) |
 
-### CSS Variables (`frontend/static/css/theme.css`)
+### CSS Variables (`public/static/css/theme.css`)
 ```css
 :root {
   --brand-saffron: #F59E0B;
@@ -39,7 +39,7 @@ All colors meet or exceed WCAG AA accessibility contrast standards across light 
 
 ---
 
-## 3. Brand Assets Directory (`frontend/assets/`)
+## 3. Brand Assets Directory (`public/assets/`)
 
 All vector assets are 100% lightweight, hand-crafted SVG code without external dependencies, CDN links, or third-party artwork:
 
@@ -55,7 +55,7 @@ All vector assets are 100% lightweight, hand-crafted SVG code without external d
 
 ---
 
-## 4. Category Icons (`frontend/assets/icons/`)
+## 4. Category Icons (`public/assets/icons/`)
 
 A unified set of 10 category icons built with a cohesive style: `24x24 viewBox`, `2px stroke`, `round` caps/joins, using `currentColor` to dynamically inherit active theme tokens:
 

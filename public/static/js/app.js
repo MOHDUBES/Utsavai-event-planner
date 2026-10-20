@@ -935,6 +935,7 @@ $('#chat-form')?.addEventListener('submit', async (e) => {
       body: JSON.stringify({
         session_id: currentSessionId,
         message: message,
+        previous_plan_context: currentPlan,
       }),
     });
 

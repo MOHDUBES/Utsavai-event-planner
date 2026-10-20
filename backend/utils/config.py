@@ -28,6 +28,7 @@ class Settings(BaseSettings):
 
     # ── CORS ──────────────────────────────────────────────────
     cors_origins: str = Field(default="http://localhost:8000,http://127.0.0.1:8000")
+    cors_origin_regex: str = Field(default=r"^https://.*\.vercel\.app$")
 
     @property
     def cors_origins_list(self) -> list[str]:

@@ -12,8 +12,11 @@ help:  ## Show this help message
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-install:  ## Install all dependencies
+install:  ## Install production dependencies
 	$(PIP) install -r requirements.txt
+
+install-dev:  ## Install development and test dependencies
+	$(PIP) install -r requirements-dev.txt
 
 run:  ## Run the development server (no reload)
 	$(UVICORN) backend.main:app --host 127.0.0.1 --port 8000
@@ -44,6 +47,6 @@ clean:  ## Remove cache files and build artifacts
 	find . -type d -name htmlcov -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name .coverage -delete 2>/dev/null || true
 
-setup:  ## Full setup: install + copy .env.example
-	$(PIP) install -r requirements.txt
+setup:  ## Full setup: install dev dependencies + copy .env.example
+	$(PIP) install -r requirements-dev.txt
 	@if not exist .env (copy .env.example .env & echo Created .env from .env.example) else (echo .env already exists)
