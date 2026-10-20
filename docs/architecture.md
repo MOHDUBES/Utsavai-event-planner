@@ -55,14 +55,14 @@ graph TB
 
     subgraph Engines["Deterministic Engines (Python Services)"]
         B_Engine["Budget Engine<br/>Base Allocations × City Tier × Season × Priorities"]
-        T_Engine["Timeline Engine<br/>Backward Planner (T-N to T-0), Compression Alert"]
+        T_Engine["Timeline Engine<br/>Backward Planner (T-365 to Day-of), Compression Alert"]
         V_Engine["Vendor Engine<br/>Category Matrix, Lead Times, Questions to Ask"]
         S_Engine["Sanity Check Engine<br/>Monsoon Risk, Festival Clashes, Headcount Checks"]
     end
 
     subgraph AIService["AI Personalization & Resilience Layer"]
         Cache["In-Memory LRU Cache<br/>(Normalized SHA256 context hash)"]
-        LLM_Adapter["Provider Adapter<br/>(Gemini 3.8 Flash / OpenAI / Anthropic)"]
+        LLM_Adapter["Provider Adapter<br/>(Gemini 2.5 Flash / OpenAI / Anthropic)"]
         Fallback["Curated Template Fallback<br/>(100% Offline Cultural Database)"]
     end
 
@@ -132,7 +132,7 @@ The timeline engine schedules every event task backward from the event date ($T=
 $$\text{Task Execution Date} = \text{Event Date} - \text{Offset Days}$$
 
 - **Event Complexity Offsets:**
-  - Weddings: Up to 270 days ($T-270$ for venue booking, $T-180$ for caterer, $T-30$ for invitations, $T-3$ for vendor sync, $T-0$ for coordination).
+  - Weddings: Up to 365 days ($T-365$ for initial budget and family consult, $T-270$ for date & muhurats, $T-240$ for venue, $T-180$ for caterer, $T-30$ for invitations, $T-3$ for vendor sync, $T-0$ for coordination).
   - Birthdays & Anniversaries: 30 to 45 days.
   - Diwali Melas & Fests: 90 days with municipal and police NOC milestones at $T-45$.
 - **Compression Detection:** If the user creates a plan with fewer than 30 days until the event date, the engine flags `is_compressed = True`, recalculates all past milestones into urgent immediate action items, and generates warning alerts.

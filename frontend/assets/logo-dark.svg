@@ -9,8 +9,8 @@
       <stop offset="100%" stop-color="#FEF08A" />
     </linearGradient>
     <linearGradient id="logoTickDark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818CF8" />
-      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="0%" stop-color="#A5B4FC" />
+      <stop offset="50%" stop-color="#818CF8" />
       <stop offset="100%" stop-color="#F59E0B" />
     </linearGradient>
     <radialGradient id="logoGlowDark" cx="50%" cy="50%" r="50%">

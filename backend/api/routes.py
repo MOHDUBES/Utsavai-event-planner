@@ -260,8 +260,9 @@ async def _process_chat_message(
                 from google import genai
 
                 client = genai.Client(api_key=settings.gemini_api_key)
+                model_name = getattr(settings, "gemini_model", "gemini-2.5-flash")
                 interaction = client.interactions.create(
-                    model="gemini-3.8-flash",
+                    model=model_name,
                     input=f"{SYSTEM_PROMPT}\n\n{context_prompt}",
                     store=False,
                 )

@@ -46,7 +46,7 @@ graph TB
         
         subgraph Deterministic["Deterministic Engines (Instant, Local)"]
             B1[Budget Engine<br>City tier × Season × Priorities]
-            B2[Timeline Generator<br>Backward planned T-90 to Day-of]
+            B2[Timeline Generator<br>Backward planned T-365 to Day-of]
             B3[Vendor Checklist<br>Category-wise with Q&A]
             B4[Sanity Checks<br>8 validation rules]
         end
@@ -94,7 +94,7 @@ graph TB
 |---|---|
 | **Smart Intake Form** | 3-step wizard: basics → details → priorities |
 | **Budget Engine** | City tier (metro/tier-2/tier-3), season (peak/shoulder/off), guest count economy of scale, priority allocation, 10% contingency, per-head cost, warnings |
-| **Timeline Generator** | T-90 to Day-of, compressed for close dates, overdue detection, outdoor tasks |
+| **Timeline Generator** | T-365 to Day-of, compressed for close dates, overdue detection, outdoor tasks |
 | **Vendor Checklist** | Category-wise with questions-to-ask, booking lead times, cost ranges |
 | **AI Personalization** | Theme ideas, menu, decor, invitation wording, games, speech/toast |
 | **Chat Assistant** | Follow-up Q&A: cost reduction analysis, reschedule impact, vendor info |
@@ -118,7 +118,7 @@ graph TB
 
 ```bash
 # 1. Clone and enter the repo
-git clone https://github.com/YOUR_USERNAME/utsavai-event-planner.git
+git clone https://github.com/mohd-ubes/utsavai-event-planner.git
 cd utsavai-event-planner
 
 # 2. Install dependencies
@@ -202,7 +202,7 @@ Statement coverage: 85%
 |---|---|---|
 | **Backend** | Python 3.11+ + FastAPI | Async, strictly typed, fast, production DX |
 | **Validation** | Pydantic v2 | High-performance type safety & automatic string sanitization |
-| **AI SDK & Models** | `google-genai` ≥ 2.25.0 (`gemini-3.8-flash`), `openai` ≥ 1.58.0 (`gpt-4o-mini`), `anthropic` ≥ 0.40.0 (`claude-3-5-haiku-latest`) | Fast, structured JSON generation with multi-provider fallback |
+| **AI SDK & Models** | `google-genai` ≥ 2.25.0 (`gemini-2.5-flash`), `openai` ≥ 1.58.0 (`gpt-4o-mini`), `anthropic` ≥ 0.40.0 (`claude-3-5-haiku-latest`) | Fast, structured JSON generation with multi-provider fallback |
 | **Frontend** | Vanilla HTML5 / CSS3 / ES6+ JS | Zero build step, lightweight (<450 KB), instant first load |
 | **Rate Limiting** | slowapi | Per-IP request throttling (30 req/min) |
 | **Config** | pydantic-settings | Environment-based configuration, zero hardcoded secrets |
@@ -239,7 +239,7 @@ Statement coverage: 85%
 | **Focus Management** | Visible focus ring; focus moved to first field on step change; focus moved after plan loads |
 | **Screen Reader Support** | Live regions (`aria-live="polite"` and `aria-live="assertive"`) for dynamic updates |
 | **Skip Link** | "Skip to main content" link at top of page |
-| **WCAG AA Contrast** | Theme colors: Deep Maroon `#451A03` text on Cream `#FFF7ED` = **13.96:1** (AAA), Heritage Maroon `#7C2D12` on Cream = **9.09:1** (AAA), Cream `#FFF7ED` on Dark Canvas `#0A0A14` = **18.7:1** (AAA), Saffron `#F59E0B` on Dark Canvas = **9.15:1** (AAA), Indigo `#6366F1` on Dark Canvas = **6.5:1** (AA) |
+| **WCAG AA Contrast** | Theme colors: Deep Maroon `#451A03` on Cream `#FFF7ED` = **14.11:1** (AAA), Heritage Maroon `#7C2D12` on Cream = **8.83:1** (AAA), Cream `#FFF7ED` on Dark Canvas `#0A0A14` = **18.55:1** (AAA), Saffron `#F59E0B` on Dark Canvas = **9.17:1** (AAA), Indigo `#818CF8` on Dark Canvas = **6.60:1** (AA), Indigo `#3730A3` on Cream = **9.36:1** (AAA) |
 | **Responsive/Mobile-first** | CSS `clamp()` for fluid typography; grid layout adapts to all screen sizes |
 | **Dark/Light Mode** | CSS custom properties with `data-theme` toggle; saved to localStorage |
 | **Reduced Motion** | `@media (prefers-reduced-motion: reduce)` disables all animations |
@@ -370,7 +370,7 @@ utsavai-event-planner/
 
 ## 📊 Demo Scenarios
 
-### 💍 Wedding in Delhi – ₹10 Lakh
+### 💍 Wedding in Delhi – ₹10 Lakh *(Top categories shown)*
 
 | Category | Allocation | Amount |
 |---|---|---|
@@ -381,7 +381,7 @@ utsavai-event-planner/
 | Makeup & Attire | 5% | ₹45,000 |
 | Contingency | 10% | ₹1,00,000 |
 
-### 🎂 Kid's Birthday in Mumbai – ₹40,000
+### 🎂 Kid's Birthday in Mumbai – ₹40,000 *(Top categories shown)*
 
 | Category | Allocation | Amount |
 |---|---|---|
@@ -392,7 +392,7 @@ utsavai-event-planner/
 | Cake | 6% | ₹2,160 |
 | Contingency | 10% | ₹4,000 |
 
-### 🪔 Diwali Mela in Jaipur – ₹1.5 Lakh
+### 🪔 Diwali Mela in Jaipur – ₹1.5 Lakh *(Top categories shown)*
 
 | Category | Allocation | Amount |
 |---|---|---|
@@ -457,4 +457,6 @@ utsavai-event-planner/
 
 ---
 
-*Made with ❤️ for India's celebrations. Built by MOHD UBES. Jai Hind! 🇮🇳*
+*Made with ❤️ for India's celebrations. Jai Hind! 🇮🇳*
+
+Built by MOHD UBES

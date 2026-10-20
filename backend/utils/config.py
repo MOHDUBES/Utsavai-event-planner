@@ -37,8 +37,9 @@ class Settings(BaseSettings):
     # ── AI Provider ───────────────────────────────────────────
     ai_provider: str = Field(default="none")  # gemini | openai | anthropic | none
 
-    # API keys — never log these
+    # API keys & model identifiers — never log keys
     gemini_api_key: str = Field(default="")
+    gemini_model: str = Field(default="gemini-2.5-flash")
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
 

@@ -26,8 +26,8 @@
 
     <!-- Tick Gradient -->
     <linearGradient id="ogTick" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818CF8" />
-      <stop offset="60%" stop-color="#6366F1" />
+      <stop offset="0%" stop-color="#A5B4FC" />
+      <stop offset="60%" stop-color="#818CF8" />
       <stop offset="100%" stop-color="#F59E0B" />
     </linearGradient>
 

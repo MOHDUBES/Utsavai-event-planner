@@ -1,7 +1,7 @@
 """
 Timeline Generator – backward-planned event timeline for UtsavAI.
 
-Generates tasks from T-90 days to Day-of, with:
+Generates tasks from T-365 days to Day-of, with:
 - Compression when event is < 30 days away
 - Priority flags
 - Category grouping

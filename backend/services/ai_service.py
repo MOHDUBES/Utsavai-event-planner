@@ -305,8 +305,9 @@ async def _call_gemini(prompt: str, system: str, settings: object) -> dict:
         client = genai.Client(api_key=settings.gemini_api_key)
 
         full_prompt = f"{system}\n\n{prompt}"
+        model_name = getattr(settings, "gemini_model", "gemini-2.5-flash")
         interaction = client.interactions.create(
-            model="gemini-3.8-flash",
+            model=model_name,
             input=full_prompt,
             store=False,  # No need to retain
         )
