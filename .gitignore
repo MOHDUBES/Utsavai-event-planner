@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-selfcheck.json
+
+# Virtual environments
+.env
+*.env.local
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Node / Frontend build (if ever needed)
+node_modules/
+dist/
+.npm/
+
+# Logs
+*.log
+logs/
+
+# Large media
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.tar.gz
+
+# Local cache
+.cache/
+__pycache__/
+
+# Ruff cache
+.ruff_cache/
