@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="UtsavAI – India's smartest AI-powered event planner for weddings, birthdays, and cultural celebrations. Plan your perfect event with budgets, timelines, and vendor checklists." />
+  <meta name="keywords"
+    content="event planner India, wedding planner, birthday planner, Diwali mela, AI event planning, budget calculator" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="UtsavAI – Smart Celebration & Event Planner" />
+  <meta property="og:description"
+    content="AI-powered event planning for Indian weddings, birthdays & cultural events" />
+  <meta property="og:type" content="website" />
+  <title>UtsavAI – Smart Celebration & Event Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Live region for screen reader announcements -->
+  <div id="aria-live" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+  <div id="aria-assertive" aria-live="assertive" aria-atomic="true" class="sr-only"></div>
+
+  <!-- ── Header ── -->
+  <header class="header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="UtsavAI Home">
+        <span class="logo-icon" aria-hidden="true">🎊</span>
+        <span class="logo-text">UtsavAI</span>
+        <span class="logo-tagline">Smart Event Planner</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <button id="lang-toggle" class="btn btn-ghost btn-sm" aria-label="Switch language" aria-pressed="false"
+          title="Toggle Hindi/English">
+          <span class="lang-en" aria-hidden="true">हिं</span>
+          <span class="lang-hi hidden" aria-hidden="true">EN</span>
+        </button>
+        <button id="theme-toggle" class="btn btn-ghost btn-sm" aria-label="Toggle dark/light mode" aria-pressed="true">
+          <span id="theme-icon" aria-hidden="true">☀️</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main id="main-content" class="main-container" role="main">
+
+    <!-- ── Hero Section ── -->
+    <section class="hero" aria-label="Welcome to UtsavAI">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge" aria-hidden="true">🇮🇳 India's Celebration Planner</div>
+          <h1 class="hero-title">
+            Plan Your Perfect
+            <span class="gradient-text">Celebration</span>
+          </h1>
+          <p class="hero-subtitle" data-i18n="hero_subtitle">
+            AI-powered planning for weddings, birthdays, Diwali melas & more.
+            Instant budget breakdown, vendor checklists, and personalized ideas — in INR.
+          </p>
+          <div class="hero-cta" role="group" aria-label="Quick actions">
+            <button id="start-planning-btn" class="btn btn-primary btn-lg" aria-label="Start planning your event">
+              <span aria-hidden="true">✨</span> Start Planning
+            </button>
+            <button id="load-demo-btn" class="btn btn-outline btn-lg" aria-expanded="false" aria-controls="demo-panel">
+              <span aria-hidden="true">🎭</span> Try a Demo
+            </button>
+          </div>
+        </div>
+        <!-- Animated decorative elements -->
+        <div class="hero-decoration" aria-hidden="true">
+          <div class="floating-card card-1">💍</div>
+          <div class="floating-card card-2">🪔</div>
+          <div class="floating-card card-3">🎂</div>
+          <div class="floating-card card-4">🎊</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Demo Scenarios Panel ── -->
+    <section id="demo-panel" class="demo-panel hidden" aria-label="Demo scenarios" role="region">
+      <div class="container">
+        <h2 class="section-title">Choose a Demo Scenario</h2>
+        <div id="demo-cards" class="demo-grid" role="list" aria-label="Demo event options">
+          <!-- Populated by JS -->
+          <div class="loading-spinner" aria-label="Loading demos..."></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Planning Form ── -->
+    <section id="planning-section" class="planning-section" aria-label="Event planning form">
+      <div class="container">
+        <div class="form-card">
+          <div class="form-header">
+            <h2 class="form-title" data-i18n="form_title">
+              <span aria-hidden="true">📋</span> Tell Us About Your Event
+            </h2>
+            <p class="form-subtitle" data-i18n="form_subtitle">
+              Fill in the details and we'll generate a complete plan in seconds.
+            </p>
+          </div>
+
+          <form id="event-form" novalidate aria-label="Event planning intake form">
+            <!-- Step indicator -->
+            <div class="step-indicator" role="navigation" aria-label="Form steps">
+              <div class="step active" data-step="1" aria-current="step">
+                <span class="step-num" aria-hidden="true">1</span>
+                <span class="step-label">Basics</span>
+              </div>
+              <div class="step" data-step="2">
+                <span class="step-num" aria-hidden="true">2</span>
+                <span class="step-label">Details</span>
+              </div>
+              <div class="step" data-step="3">
+                <span class="step-num" aria-hidden="true">3</span>
+                <span class="step-label">Priorities</span>
+              </div>
+            </div>
+
+            <!-- Step 1: Basics -->
+            <fieldset id="step-1" class="form-step active" aria-label="Step 1: Basic event information">
+              <legend class="sr-only">Basic Event Information</legend>
+              <div class="form-grid">
+
+                <div class="form-group">
+                  <label for="event_type" class="form-label required" data-i18n="label_event_type">
+                    Event Type
+                  </label>
+                  <select id="event_type" name="event_type" class="form-select" required aria-required="true"
+                    aria-describedby="event_type-hint">
+                    <option value="">Select event type…</option>
+                    <option value="wedding">💍 Wedding</option>
+                    <option value="birthday">🎂 Birthday</option>
+                    <option value="diwali_mela">🪔 Diwali Mela</option>
+                    <option value="eid_celebration">🌙 Eid Celebration</option>
+                    <option value="navratri">💃 Navratri</option>
+                    <option value="college_fest">🎓 College Fest</option>
+                    <option value="corporate">🏢 Corporate Event</option>
+                    <option value="anniversary">💕 Anniversary</option>
+                    <option value="baby_shower">👶 Baby Shower</option>
+                    <option value="rwa_event">🏘️ RWA / Community Event</option>
+                    <option value="other">🎉 Other</option>
+                  </select>
+                  <span id="event_type-hint" class="form-hint">Choose your celebration type</span>
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="event_date" class="form-label required" data-i18n="label_date">
+                    Event Date
+                  </label>
+                  <input type="date" id="event_date" name="event_date" class="form-input" required aria-required="true"
+                    aria-describedby="event_date-hint" />
+                  <span id="event_date-hint" class="form-hint">Must be a future date</span>
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="city" class="form-label required" data-i18n="label_city">
+                    City
+                  </label>
+                  <input type="text" id="city" name="city" class="form-input" placeholder="e.g. Delhi, Mumbai, Jaipur"
+                    required aria-required="true" maxlength="100" autocomplete="address-level2" />
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="city_tier" class="form-label required" data-i18n="label_city_tier">
+                    City Tier
+                  </label>
+                  <select id="city_tier" name="city_tier" class="form-select" required aria-required="true"
+                    aria-describedby="city_tier-hint">
+                    <option value="metro">🏙️ Metro (Delhi, Mumbai, Bengaluru…)</option>
+                    <option value="tier2">🌆 Tier 2 (Jaipur, Pune, Lucknow…)</option>
+                    <option value="tier3">🏘️ Tier 3 (Smaller cities)</option>
+                  </select>
+                  <span id="city_tier-hint" class="form-hint">Affects cost estimates</span>
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="guest_count" class="form-label required" data-i18n="label_guests">
+                    Number of Guests
+                  </label>
+                  <input type="number" id="guest_count" name="guest_count" class="form-input" placeholder="e.g. 200"
+                    required aria-required="true" min="1" max="10000" aria-describedby="guest_count-hint" />
+                  <span id="guest_count-hint" class="form-hint">1 – 10,000 guests</span>
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="total_budget_inr" class="form-label required" data-i18n="label_budget">
+                    Total Budget (₹ INR)
+                  </label>
+                  <div class="input-with-prefix">
+                    <span class="input-prefix" aria-hidden="true">₹</span>
+                    <input type="number" id="total_budget_inr" name="total_budget_inr" class="form-input"
+                      placeholder="e.g. 1000000" required aria-required="true" min="1000" max="100000000"
+                      aria-describedby="budget-hint" />
+                  </div>
+                  <span id="budget-hint" class="form-hint">
+                    <span id="budget-display">Enter your total budget</span>
+                  </span>
+                  <span class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+              </div>
+              <div class="form-nav">
+                <button type="button" class="btn btn-primary next-step" data-next="2">
+                  Next: Details <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </fieldset>
+
+            <!-- Step 2: Details -->
+            <fieldset id="step-2" class="form-step" aria-label="Step 2: Event style and cultural details">
+              <legend class="sr-only">Event Style & Cultural Details</legend>
+              <div class="form-grid">
+
+                <div class="form-group form-group-full">
+                  <label for="theme" class="form-label" data-i18n="label_theme">
+                    Theme / Style (optional)
+                  </label>
+                  <input type="text" id="theme" name="theme" class="form-input"
+                    placeholder="e.g. Royal Rajasthani, Garden Party, Minimalist Modern" maxlength="200" />
+                </div>
+
+                <div class="form-group">
+                  <label for="dietary" class="form-label" data-i18n="label_dietary">
+                    Dietary Preference
+                  </label>
+                  <select id="dietary" name="dietary" class="form-select">
+                    <option value="veg">🥦 Vegetarian</option>
+                    <option value="jain">🟢 Jain</option>
+                    <option value="halal">☪️ Halal</option>
+                    <option value="non_veg">🍖 Non-Vegetarian</option>
+                    <option value="mixed" selected>🍽️ Mixed (Veg + Non-Veg)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="venue_type" class="form-label" data-i18n="label_venue_type">
+                    Venue Type
+                  </label>
+                  <select id="venue_type" name="venue_type" class="form-select">
+                    <option value="indoor" selected>🏛️ Indoor</option>
+                    <option value="outdoor">🌳 Outdoor</option>
+                    <option value="hybrid">🔀 Hybrid</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="religion_culture" class="form-label" data-i18n="label_religion">
+                    Religion / Culture (optional)
+                  </label>
+                  <input type="text" id="religion_culture" name="religion_culture" class="form-input"
+                    placeholder="e.g. Hindu, Muslim, Sikh, Christian, Jain, No preference" maxlength="100" />
+                </div>
+
+                <div class="form-group form-group-full">
+                  <label for="cultural_customs" class="form-label" data-i18n="label_customs">
+                    Cultural Customs / Rituals (optional)
+                  </label>
+                  <textarea id="cultural_customs" name="cultural_customs" class="form-textarea"
+                    placeholder="e.g. North Indian wedding with haldi, mehendi, sangeet and pheras; Garba nights for navratri…"
+                    maxlength="500" rows="3"></textarea>
+                </div>
+
+                <div class="form-group form-group-full">
+                  <label for="special_requirements" class="form-label" data-i18n="label_requirements">
+                    Special Requirements (optional)
+                  </label>
+                  <textarea id="special_requirements" name="special_requirements" class="form-textarea"
+                    placeholder="e.g. Wheelchair accessible venue, nut-free menu, accommodation for 50 guests…"
+                    maxlength="1000" rows="3"></textarea>
+                </div>
+
+              </div>
+              <div class="form-nav">
+                <button type="button" class="btn btn-ghost prev-step" data-prev="1">
+                  <span aria-hidden="true">←</span> Back
+                </button>
+                <button type="button" class="btn btn-primary next-step" data-next="3">
+                  Next: Priorities <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </fieldset>
+
+            <!-- Step 3: Priorities -->
+            <fieldset id="step-3" class="form-step" aria-label="Step 3: Budget priorities">
+              <legend class="form-legend" data-i18n="label_priorities">
+                What matters most to you? (Select up to 6, drag to reorder)
+              </legend>
+              <div id="priority-chips" class="priority-chips" role="group" aria-label="Budget priority selection">
+                <button type="button" class="priority-chip" data-value="food" aria-pressed="true">
+                  <span aria-hidden="true">🍽️</span> Food & Catering
+                </button>
+                <button type="button" class="priority-chip" data-value="venue" aria-pressed="true">
+                  <span aria-hidden="true">🏛️</span> Venue
+                </button>
+                <button type="button" class="priority-chip" data-value="decor" aria-pressed="true">
+                  <span aria-hidden="true">💐</span> Decor
+                </button>
+                <button type="button" class="priority-chip" data-value="photography" aria-pressed="false">
+                  <span aria-hidden="true">📸</span> Photography
+                </button>
+                <button type="button" class="priority-chip" data-value="music" aria-pressed="false">
+                  <span aria-hidden="true">🎵</span> Music & DJ
+                </button>
+                <button type="button" class="priority-chip" data-value="entertainment" aria-pressed="false">
+                  <span aria-hidden="true">🎭</span> Entertainment
+                </button>
+                <button type="button" class="priority-chip" data-value="invitations" aria-pressed="false">
+                  <span aria-hidden="true">💌</span> Invitations
+                </button>
+                <button type="button" class="priority-chip" data-value="transport" aria-pressed="false">
+                  <span aria-hidden="true">🚗</span> Transport
+                </button>
+              </div>
+              <p class="form-hint">Selected priorities receive a higher budget allocation</p>
+              <div class="form-nav">
+                <button type="button" class="btn btn-ghost prev-step" data-prev="2">
+                  <span aria-hidden="true">←</span> Back
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+                  <span id="submit-icon" aria-hidden="true">✨</span>
+                  <span id="submit-text" data-i18n="btn_generate">Generate My Plan</span>
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Results Section ── -->
+    <section id="results-section" class="results-section hidden" aria-label="Your event plan" aria-live="polite">
+      <div class="container">
+
+        <!-- Plan Header -->
+        <div class="plan-header" id="plan-header">
+          <div class="plan-title-area">
+            <h2 class="plan-title" id="plan-title">Your Event Plan</h2>
+            <div class="plan-meta" id="plan-meta"></div>
+          </div>
+          <div class="plan-actions" role="group" aria-label="Plan actions">
+            <button id="export-md-btn" class="btn btn-outline btn-sm" aria-label="Export plan as Markdown">
+              <span aria-hidden="true">📄</span> Export MD
+            </button>
+            <button id="export-json-btn" class="btn btn-outline btn-sm" aria-label="Export plan as JSON">
+              <span aria-hidden="true">📦</span> Export JSON
+            </button>
+            <button id="print-btn" class="btn btn-outline btn-sm" aria-label="Print plan">
+              <span aria-hidden="true">🖨️</span> Print
+            </button>
+            <button id="save-btn" class="btn btn-ghost btn-sm" aria-label="Save plan to browser storage">
+              <span aria-hidden="true">💾</span> Save
+            </button>
+            <button id="new-plan-btn" class="btn btn-primary btn-sm" aria-label="Start a new plan">
+              <span aria-hidden="true">+</span> New Plan
+            </button>
+          </div>
+        </div>
+
+        <!-- Sanity Check Alerts -->
+        <div id="sanity-alerts" class="sanity-alerts" role="status" aria-label="Event checks"></div>
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Plan sections">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-budget" id="tab-btn-budget"
+            data-tab="budget">
+            <span aria-hidden="true">💰</span> Budget
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-timeline" id="tab-btn-timeline"
+            data-tab="timeline">
+            <span aria-hidden="true">📅</span> Timeline
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-vendors" id="tab-btn-vendors"
+            data-tab="vendors">
+            <span aria-hidden="true">📋</span> Vendors
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-ai" id="tab-btn-ai" data-tab="ai">
+            <span aria-hidden="true">✨</span> Ideas
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-chat" id="tab-btn-chat"
+            data-tab="chat">
+            <span aria-hidden="true">💬</span> Chat
+          </button>
+        </div>
+
+        <!-- Budget Tab -->
+        <div id="tab-budget" class="tab-panel active" role="tabpanel" aria-labelledby="tab-btn-budget">
+          <div id="budget-content"></div>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="tab-timeline" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-timeline">
+          <div id="timeline-content"></div>
+        </div>
+
+        <!-- Vendors Tab -->
+        <div id="tab-vendors" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-vendors">
+          <div id="vendors-content"></div>
+        </div>
+
+        <!-- AI Ideas Tab -->
+        <div id="tab-ai" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-ai">
+          <div id="ai-content"></div>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="tab-chat" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-chat">
+          <div class="chat-container">
+            <div id="chat-messages" class="chat-messages" role="log" aria-label="Chat history" aria-live="polite">
+              <div class="chat-message assistant-message">
+                <div class="message-avatar" aria-hidden="true">🤖</div>
+                <div class="message-content">
+                  <p>Namaste! 🙏 I'm your UtsavAI assistant. I can help you:</p>
+                  <ul>
+                    <li>Understand your budget breakdown</li>
+                    <li>Cut costs in specific areas ("Cut decor by 20%")</li>
+                    <li>Analyze rescheduling impact</li>
+                    <li>Answer vendor questions</li>
+                    <li>Modify guest count</li>
+                  </ul>
+                  <p>What would you like to know?</p>
+                </div>
+              </div>
+            </div>
+            <form id="chat-form" class="chat-input-form" aria-label="Chat with assistant">
+              <label for="chat-input" class="sr-only">Type your question</label>
+              <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about your plan…"
+                maxlength="2000" autocomplete="off" aria-describedby="chat-hint" />
+              <span id="chat-hint" class="sr-only">Press Enter or click Send to ask a question</span>
+              <button type="submit" class="btn btn-primary chat-send" aria-label="Send message">
+                <span aria-hidden="true">↑</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Loading overlay ── -->
+    <div id="loading-overlay" class="loading-overlay hidden" role="status" aria-label="Generating your event plan"
+      aria-live="polite">
+      <div class="loading-card">
+        <div class="loading-animation" aria-hidden="true">
+          <div class="diya-loader">🪔</div>
+        </div>
+        <p class="loading-title">Creating Your Perfect Plan</p>
+        <p id="loading-step" class="loading-step">Calculating budget allocation…</p>
+        <div class="loading-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="loading-bar" class="loading-bar"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer-inner">
+      <p class="footer-text">
+        <span aria-hidden="true">🎊</span>
+        UtsavAI – Made with ❤️ for India's celebrations.
+        Powered by Gemini AI.
+      </p>
+      <p class="footer-disclaimer">
+        Budget estimates are approximate Indian market averages. Actual costs may vary by vendor.
+      </p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js" defer></script>
+</body>
+
+</html>
