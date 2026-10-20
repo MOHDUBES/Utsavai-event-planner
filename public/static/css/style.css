@@ -428,24 +428,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
-.hero-decoration {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.floating-card {
-  position: absolute;
-  font-size: 1.75rem;
-  animation: float 6s ease-in-out infinite;
-  opacity: 0.35;
-}
-.card-1 { top: 10%; left: 4%; }
-.card-2 { top: 15%; right: 4%; animation-delay: 1.5s; }
-.card-3 { bottom: 15%; left: 6%; animation-delay: 3s; }
-.card-4 { bottom: 10%; right: 6%; animation-delay: 4.5s; }
-
 /* ── 10. Demo Panel ──────────────────────────────────────── */
 .demo-panel {
   padding: var(--space-6) 0;
