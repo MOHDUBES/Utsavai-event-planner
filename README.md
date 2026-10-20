@@ -5,10 +5,12 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](tests/)
-[![Vercel](https://img.shields.io/badge/deploy-Vercel-black.svg?logo=vercel)](https://utsavai-event-planner.vercel.app)
+[![Tests: 143 Passed](https://img.shields.io/badge/tests-143%20passed%20(91%25%20cov)-brightgreen)](tests/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live-success?logo=vercel)](https://utsavai-event-planner.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-MOHDUBES%2FUtsavai--event--planner-181717?logo=github)](https://github.com/MOHDUBES/Utsavai-event-planner)
 
-> 🌐 **Live Demo:** [https://utsavai-event-planner.vercel.app](https://utsavai-event-planner.vercel.app) *(Deployment configured for Vercel Serverless)*
+> 🌐 **Live Deployed URL:** [https://utsavai-event-planner.vercel.app/](https://utsavai-event-planner.vercel.app/)  
+> 📱 **Mobile & Desktop Web App:** Fully responsive, PWA-enabled, serverless on Vercel
 
 ---
 
@@ -178,7 +180,7 @@ vercel --prod
 5. Configure Environment Variables in Project Settings:
    - `AI_PROVIDER`: `gemini` (or `none` for offline fallback)
    - `GEMINI_API_KEY`: `your_gemini_api_key`
-   - `GEMINI_MODEL`: `gemini-2.5-flash`
+   - `GEMINI_MODEL`: `gemini-3.8-flash`
    - `CORS_ORIGINS`: `https://utsavai-event-planner.vercel.app`
    - `CORS_ORIGIN_REGEX`: `^https://.*\.vercel\.app$`
 6. Click **Deploy**. Your app will be live within seconds!
@@ -208,12 +210,12 @@ make test-cov
 | `tests/test_budget_engine.py` | 31 tests | Season detection, city tiers, economy of scale, priority boosting, allocations |
 | `tests/test_timeline_engine.py` | 20 tests | Backward planning, compression (<30d), past dates, outdoor tasks, sequencing |
 | `tests/test_vendor_engine.py` | 12 tests | Event-type mapping, dietary preferences (Jain/Halal/Veg), lead times, costs |
-| `tests/test_api_and_validators.py` | 50 tests | REST endpoints, Pydantic schemas, security headers, rate limiting, Vercel ASGI entrypoint |
+| `tests/test_api_and_validators.py` | 51 tests | REST endpoints, Pydantic schemas, security headers, rate limiting, Vercel ASGI entrypoint, config re-exports |
 | `tests/test_ai_service.py` | 8 tests | Mocked LLM responses, malformed JSON fallback, timeouts, caching, injection scrubbing |
-| `tests/test_chat_assistant.py` | 3 tests | Engine re-run on decor cost cut, 2-week reschedule re-run, stateless plan context |
+| `tests/test_chat_assistant.py` | 9 tests | Engine re-run on decor cost cut, 2-week reschedule re-run, stateless plan context, timeline/vendor/guest queries |
 | `tests/test_demo_scenarios.py` | 4 tests | Verification of all 3 demo scenarios (Delhi Wedding, Mumbai Birthday, Jaipur Mela) |
 | `tests/test_frontend_static.py` | 8 tests | Viewport meta (`viewport-fit=cover`), PWA manifest integrity, asset paths, HTTP 200 |
-| **Total** | **136 tests** | **100% passing, 86% statement coverage across core codebase** |
+| **Total** | **143 tests** | **100% passing, 91% statement coverage across core codebase** |
 
 #### Real Test Suite Execution Output
 
