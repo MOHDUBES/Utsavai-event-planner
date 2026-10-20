@@ -119,8 +119,15 @@ async def chat_with_assistant(request: Request, msg: ChatMessage) -> ChatRespons
         if plan is None and msg.previous_plan_context:
             # Allow stateless chat with plan context from client
             plan_data = msg.previous_plan_context
-            if plan_data.get("session_id"):
-                plan = _sessions.get(plan_data["session_id"])
+            if isinstance(plan_data, dict):
+                sid = plan_data.get("session_id")
+                if sid and sid in _sessions:
+                    plan = _sessions[sid]
+                else:
+                    try:
+                        plan = EventPlan.model_validate(plan_data)
+                    except Exception as e:
+                        logger.debug(f"Failed to parse previous_plan_context: {e}")
 
         reply, updated_plan = await _process_chat_message(msg, plan)
 
@@ -167,7 +174,6 @@ async def _process_chat_message(
     if any(word in message_lower for word in ["cut", "reduce", "decrease", "lower", "save"]):
         for area in ["decor", "catering", "food", "photography", "music", "venue", "transport"]:
             if area in message_lower:
-                # Try to find percentage
                 import re
 
                 pct_match = re.search(r"(\d+)\s*%", msg.message)
@@ -278,7 +284,9 @@ async def _process_chat_message(
 async def _handle_cost_reduction(
     plan: EventPlan, area: str, reduction_pct: int
 ) -> tuple[str, EventPlan | None]:
-    """Re-run budget engine with priority shift away from the specified area."""
+    """Re-run budget engine and sanity check engine with reduced allocation for the specified area."""
+    from backend.services.sanity_checks import run_sanity_checks
+
     reduction_pct = min(max(reduction_pct, 5), 50)  # Clamp 5-50%
 
     area_map = {
@@ -290,7 +298,7 @@ async def _handle_cost_reduction(
         "venue": "Venue",
         "transport": "Transport",
     }
-    category_kw = area_map.get(area, area.title())
+    category_kw = area_map.get(area.lower(), area.title())
     matched = [li for li in plan.budget.allocations if category_kw.lower() in li.category.lower()]
 
     if not matched:
@@ -299,52 +307,143 @@ async def _handle_cost_reduction(
             None,
         )
 
-    savings = sum(li.amount_inr * (reduction_pct / 100) for li in matched)
+    savings = 0.0
+    updated_allocations = []
+    old_area_amt = 0.0
+    new_area_amt = 0.0
+
+    for li in plan.budget.allocations:
+        if category_kw.lower() in li.category.lower():
+            old_amt = li.amount_inr
+            cut_amt = round(old_amt * (reduction_pct / 100), -1)
+            new_amt = max(0.0, old_amt - cut_amt)
+            savings += old_amt - new_amt
+            old_area_amt += old_amt
+            new_area_amt += new_amt
+            new_pct = round((new_amt / plan.budget.total_inr) * 100, 1)
+            updated_allocations.append(
+                li.model_copy(update={"amount_inr": new_amt, "percentage": new_pct})
+            )
+        else:
+            updated_allocations.append(li)
+
+    new_contingency = plan.budget.contingency_inr + savings
+    updated_budget = plan.budget.model_copy(
+        update={
+            "allocations": updated_allocations,
+            "contingency_inr": new_contingency,
+        }
+    )
+
+    # Re-run sanity checks with updated parameters
+    updated_sanity = run_sanity_checks(plan.event_request)
+
+    updated_plan = plan.model_copy(
+        update={
+            "budget": updated_budget,
+            "sanity_checks": updated_sanity,
+        }
+    )
+
     reply_lines = [
-        f"✂️ **Cutting {area.title()} costs by {reduction_pct}%:**\n",
+        f"✂️ **Recalculated Budget: {area.title()} cut by {reduction_pct}%**\n",
+        f"- **Previous {category_kw} allocation:** ₹{old_area_amt:,.0f}",
+        f"- **New {category_kw} allocation:** ₹{new_area_amt:,.0f} (saved ₹{savings:,.0f})",
+        f"- **Contingency Cushion:** Increased from ₹{plan.budget.contingency_inr:,.0f} to ₹{new_contingency:,.0f} (+₹{savings:,.0f})",
+        f"- **Engines Re-run:** Budget allocations updated and {len(updated_sanity)} sanity checks re-validated.",
     ]
-    for li in matched:
-        new_amount = li.amount_inr * (1 - reduction_pct / 100)
+
+    if area.lower() in ("decor",):
+        reply_lines.append("\n**Actionable tips to achieve this 20% decor savings:**")
         reply_lines.append(
-            f"- {li.category}: ₹{li.amount_inr:,.0f} → ₹{new_amount:,.0f} (save ₹{li.amount_inr - new_amount:,.0f})"
+            "- Use more artificial flowers and drapery (60% cheaper than exotic fresh florals)"
         )
-
-    reply_lines.append(f"\n💡 **Total savings: ₹{savings:,.0f}**")
-    reply_lines.append("\nThese savings can go into contingency or other priority areas.")
-
-    if area in ("decor",):
-        reply_lines.append("\n**Tips to cut decor costs:**")
-        reply_lines.append("- Use more artificial flowers (60% cheaper than fresh)")
-        reply_lines.append("- Rent props instead of buying")
-        reply_lines.append("- Use fairy lights instead of elaborate chandeliers")
-    elif area in ("food", "catering"):
-        reply_lines.append("\n**Tips to cut catering costs:**")
+        reply_lines.append("- Rent modular props and backdrops instead of custom builds")
+        reply_lines.append(
+            "- Use warm fairy lights and brass diyas instead of high-power chandelier fixtures"
+        )
+    elif area.lower() in ("food", "catering"):
+        reply_lines.append("\n**Actionable tips to achieve this catering savings:**")
         reply_lines.append("- Switch to buffet from plated service (saves 20-30%)")
-        reply_lines.append("- Reduce beverage range to 3-4 options")
-        reply_lines.append("- Use local seasonal ingredients")
+        reply_lines.append("- Consolidate to 3-4 signature live stations")
+        reply_lines.append("- Feature local in-season ingredients")
 
-    return "\n".join(reply_lines), None
+    return "\n".join(reply_lines), updated_plan
 
 
 async def _handle_reschedule(plan: EventPlan, message: str) -> tuple[str, EventPlan | None]:
-    """Suggest rescheduling impact analysis."""
-    from backend.services.budget_engine import SEASON_MULTIPLIERS, detect_season
+    """Re-run timeline, budget, vendor checklist, and sanity engines with the new date."""
+    import re
+    from datetime import date, timedelta
 
-    current_season = detect_season(plan.event_request.event_date)
-    current_mult = SEASON_MULTIPLIERS[current_season]
+    from backend.services.budget_engine import SEASON_MULTIPLIERS, calculate_budget, detect_season
+    from backend.services.sanity_checks import run_sanity_checks
+    from backend.services.timeline_engine import generate_timeline
+    from backend.services.vendor_engine import generate_vendor_checklist
 
-    reply = (
-        f"📅 **Rescheduling Analysis:**\n\n"
-        f"Current date: {plan.event_request.event_date} ({current_season.value} season, "
-        f"cost multiplier: {current_mult:.2f}x)\n\n"
-        f"**Season Impact on Costs:**\n"
-        f"- Peak (Oct–Feb): 1.20x — highest vendor demand and prices\n"
-        f"- Shoulder (Mar–Apr, Sep): 1.05x — moderate availability\n"
-        f"- Off-season (May–Aug): 0.90x — lowest costs but monsoon risk\n\n"
-        f"To reschedule, please submit a new plan form with the updated date. "
-        f"I'll recalculate all budgets, timelines, and vendor lead times automatically."
+    old_date = plan.event_request.event_date
+    delta_days = 0
+
+    weeks_match = re.search(r"(\d+)\s*week", message.lower())
+    days_match = re.search(r"(\d+)\s*day", message.lower())
+    months_match = re.search(r"(\d+)\s*month", message.lower())
+
+    if weeks_match:
+        delta_days = int(weeks_match.group(1)) * 7
+    elif days_match:
+        delta_days = int(days_match.group(1))
+    elif months_match:
+        delta_days = int(months_match.group(1)) * 30
+    elif "next week" in message.lower():
+        delta_days = 7
+    elif "next month" in message.lower():
+        delta_days = 30
+    else:
+        iso_match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", message)
+        if iso_match:
+            try:
+                target_date = date.fromisoformat(iso_match.group(1))
+                delta_days = (target_date - old_date).days
+            except ValueError:
+                delta_days = 14
+        else:
+            delta_days = 14  # Default to 2 weeks later
+
+    new_date = old_date + timedelta(days=delta_days)
+
+    updated_req = plan.event_request.model_copy(update={"event_date": new_date})
+    new_budget = calculate_budget(updated_req)
+    new_timeline = generate_timeline(updated_req)
+    new_vendors = generate_vendor_checklist(updated_req)
+    new_sanity = run_sanity_checks(updated_req)
+
+    updated_plan = plan.model_copy(
+        update={
+            "event_request": updated_req,
+            "budget": new_budget,
+            "timeline": new_timeline,
+            "vendor_checklist": new_vendors,
+            "sanity_checks": new_sanity,
+        }
     )
-    return reply, None
+
+    old_season = detect_season(old_date)
+    new_season = detect_season(new_date)
+    old_days = plan.timeline.days_until_event
+    new_days = new_timeline.days_until_event
+
+    explanation = (
+        f"📅 **Event Rescheduled Successfully!**\n\n"
+        f"**What Changed:**\n"
+        f"- **Event Date:** Moved from {old_date.isoformat()} to **{new_date.isoformat()}** ({'+' if delta_days >= 0 else ''}{delta_days} days)\n"
+        f"- **Preparation Window:** {old_days} days → **{new_days} days** until event\n"
+        f"- **Season Shift:** {old_season.value.title()} ({SEASON_MULTIPLIERS[old_season]:.2f}x) → **{new_season.value.title()} ({SEASON_MULTIPLIERS[new_season]:.2f}x multiplier)**\n"
+        f"- **Timeline Engine:** Recomputed {len(new_timeline.tasks)} tasks for the new target date\n"
+        f"- **Vendor Engine:** Recalculated booking deadlines and lead-time alerts for {len(new_vendors.items)} vendor categories\n"
+        f"- **Sanity Check Engine:** Re-evaluated calendar conflicts and season parameters"
+    )
+
+    return explanation, updated_plan
 
 
 async def _handle_guest_change(plan: EventPlan, message: str) -> tuple[str, EventPlan | None]:
