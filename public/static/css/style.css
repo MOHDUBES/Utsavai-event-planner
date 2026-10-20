@@ -1632,10 +1632,25 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-lg);
 }
 
-.diya-loader {
-  font-size: 3rem;
-  animation: pulse 1.5s ease-in-out infinite;
+.loading-star-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: var(--space-4);
+}
+
+.loading-brand-star {
+  width: 64px;
+  height: 64px;
+  display: block;
+  animation: pulseRotate 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.45));
+}
+
+@keyframes pulseRotate {
+  0% { transform: scale(0.92) rotate(0deg); opacity: 0.85; }
+  50% { transform: scale(1.08) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0.92) rotate(360deg); opacity: 0.85; }
 }
 
 .loading-title {
