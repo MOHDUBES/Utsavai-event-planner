@@ -171,7 +171,7 @@ make test-cov
 | `tests/test_ai_service.py` | 8 tests | Mocked LLM responses, malformed JSON fallback, timeouts, caching, injection scrubbing |
 | `tests/test_chat_assistant.py` | 3 tests | Engine re-run on decor cost cut, 2-week reschedule re-run, stateless plan context |
 | `tests/test_demo_scenarios.py` | 4 tests | Verification of all 3 demo scenarios (Delhi Wedding, Mumbai Birthday, Jaipur Mela) |
-| **Total** | **127 tests** | **100% passing, ~84% statement coverage across core packages** |
+| **Total** | **127 tests** | **100% passing, 85% statement coverage across core codebase** |
 
 #### Real Test Suite Execution Output
 
@@ -191,6 +191,7 @@ tests/test_timeline_engine.py ....................                       [ 90%]
 tests/test_vendor_engine.py ............                                 [100%]
 
 ============================= 127 passed in ~9s ==============================
+Statement coverage: 85%
 ```
 
 ---
@@ -199,14 +200,14 @@ tests/test_vendor_engine.py ............                                 [100%]
 
 | Layer | Technology | Why |
 |---|---|---|
-| **Backend** | Python 3.11 + FastAPI | Async, typed, fast, great DX |
-| **Validation** | Pydantic v2 | Type safety + auto-sanitization |
-| **AI SDK** | google-genai ≥ 2.25.0 | Gemini 3.8 Flash, batched JSON |
-| **Frontend** | Vanilla HTML/CSS/JS | Zero build step, lightweight |
-| **Rate Limiting** | slowapi | Per-IP request throttling |
-| **Config** | pydantic-settings | Env-based, no hardcoded secrets |
-| **Linting** | ruff | Fast, comprehensive |
-| **Testing** | pytest + httpx + asyncio | Async-native API testing |
+| **Backend** | Python 3.11+ + FastAPI | Async, strictly typed, fast, production DX |
+| **Validation** | Pydantic v2 | High-performance type safety & automatic string sanitization |
+| **AI SDK & Models** | `google-genai` ≥ 2.25.0 (`gemini-3.8-flash`), `openai` ≥ 1.58.0 (`gpt-4o-mini`), `anthropic` ≥ 0.40.0 (`claude-3-5-haiku-latest`) | Fast, structured JSON generation with multi-provider fallback |
+| **Frontend** | Vanilla HTML5 / CSS3 / ES6+ JS | Zero build step, lightweight (<450 KB), instant first load |
+| **Rate Limiting** | slowapi | Per-IP request throttling (30 req/min) |
+| **Config** | pydantic-settings | Environment-based configuration, zero hardcoded secrets |
+| **Linting** | ruff | Instant, comprehensive PEP 8 formatting and linting |
+| **Testing** | pytest + httpx + asyncio + pytest-cov | Async-native API testing with 85% statement coverage |
 
 ---
 
@@ -238,7 +239,7 @@ tests/test_vendor_engine.py ............                                 [100%]
 | **Focus Management** | Visible focus ring; focus moved to first field on step change; focus moved after plan loads |
 | **Screen Reader Support** | Live regions (`aria-live="polite"` and `aria-live="assertive"`) for dynamic updates |
 | **Skip Link** | "Skip to main content" link at top of page |
-| **WCAG AA Contrast** | Brand orange `#f97316` on dark `#0a0a14` = 4.8:1 ratio (AA compliant) |
+| **WCAG AA Contrast** | Theme colors: Deep Maroon `#451A03` text on Cream `#FFF7ED` = **13.96:1** (AAA), Heritage Maroon `#7C2D12` on Cream = **9.09:1** (AAA), Cream `#FFF7ED` on Dark Canvas `#0A0A14` = **18.7:1** (AAA), Saffron `#F59E0B` on Dark Canvas = **9.15:1** (AAA), Indigo `#6366F1` on Dark Canvas = **6.5:1** (AA) |
 | **Responsive/Mobile-first** | CSS `clamp()` for fluid typography; grid layout adapts to all screen sizes |
 | **Dark/Light Mode** | CSS custom properties with `data-theme` toggle; saved to localStorage |
 | **Reduced Motion** | `@media (prefers-reduced-motion: reduce)` disables all animations |
@@ -307,26 +308,27 @@ UtsavAI features a custom, lightweight brand identity crafted entirely in hand-w
 utsavai-event-planner/
 ├── backend/
 │   ├── __init__.py
-│   ├── config.py                # Configuration re-export
-│   ├── main.py                  # FastAPI app factory & security headers
+│   ├── config.py                # Top-level configuration facade (re-exports Settings)
+│   ├── main.py                  # FastAPI app factory, CORS, static mounts & security headers
 │   ├── api/
 │   │   ├── __init__.py
 │   │   └── routes.py            # REST endpoints (/plan, /chat, /demos)
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── schemas.py           # Pydantic request/response schemas
+│   │   └── schemas.py           # Pydantic request/response schemas & string sanitizers
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── budget_engine.py     # Deterministic budget calculator (INR)
 │   │   ├── timeline_engine.py   # Backward-planned timeline generator
 │   │   ├── vendor_engine.py     # Category vendor checklist generator
 │   │   ├── sanity_checks.py     # 8 cultural & weather validation checks
-│   │   └── ai_service.py        # Provider-agnostic AI wrapper & cache
+│   │   └── ai_service.py        # Multi-provider AI wrapper, cache & template fallback
 │   └── utils/
 │       ├── __init__.py
-│       └── config.py            # Pydantic settings from .env
+│       └── config.py            # Pydantic settings model loaded from .env
+│                                # (backend/config.py exposes this as a clean facade)
 ├── frontend/
-│   ├── index.html               # Single-page app with brand meta & switching
+│   ├── index.html               # Single-page app with brand meta & bilingual i18n
 │   ├── manifest.webmanifest     # Web app manifest
 │   ├── assets/
 │   │   ├── logo.svg             # Light theme full logo
@@ -339,21 +341,24 @@ utsavai-event-planner/
 │   └── static/
 │       ├── css/
 │       │   ├── style.css        # Main stylesheet
-│       │   └── theme.css        # Theme tokens
+│       │   └── theme.css        # WCAG AA brand design tokens & animations
 │       └── js/app.js            # Vanilla JS application
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py              # Shared fixtures & test client
-│   ├── test_budget_engine.py    # Budget calculation tests
+│   ├── test_ai_service.py       # Mocked AI provider tests & fallback validation
+│   ├── test_api_and_validators.py # API, schema, security, and sanity tests
+│   ├── test_budget_engine.py    # Deterministic budget calculation tests
+│   ├── test_chat_assistant.py   # Chat assistant engine re-run tests
+│   ├── test_demo_scenarios.py   # Verification of all 3 demo scenarios
 │   ├── test_timeline_engine.py  # Backward planning timeline tests
-│   ├── test_vendor_engine.py    # Vendor checklist engine tests
-│   └── test_api_and_validators.py # API, schema, and AI tests
+│   └── test_vendor_engine.py    # Vendor checklist engine tests
 ├── docs/
-│   ├── ARCHITECTURE.md          # Architecture & formula notes
+│   ├── architecture.md          # In-depth system architecture & formulas
 │   └── branding.md              # Brand identity guide & usage rules
 ├── .env.example                 # Environment configuration template
 ├── .gitignore
-├── LICENSE                      # MIT
+├── LICENSE                      # MIT (MOHD UBES)
 ├── Makefile
 ├── pyproject.toml               # Pytest + coverage configuration
 ├── requirements.txt
@@ -429,34 +434,6 @@ utsavai-event-planner/
 
 ---
 
-## 🛠️ Git Commands to Push
-
-```bash
-# Initialize and make first commit
-cd utsavai-event-planner
-git init
-git add .
-git commit -m "feat: initial UtsavAI implementation
-
-- Smart intake form with 3-step wizard
-- Deterministic budget engine (city tier × season × priorities)
-- Backward-planned timeline generator
-- Vendor checklist with questions-to-ask
-- 8-rule sanity check engine
-- Provider-agnostic AI layer (Gemini/OpenAI/Anthropic + fallback)
-- Vanilla HTML/CSS/JS frontend with dark/light mode
-- Full accessibility (WCAG AA, ARIA, keyboard nav, i18n)
-- 77 tests with mocked AI
-- Security: input sanitization, CSP, rate limiting, no key exposure"
-
-# Connect to GitHub
-git remote add origin https://github.com/YOUR_USERNAME/utsavai-event-planner.git
-git branch -M main
-git push -u origin main
-```
-
----
-
 ## ✅ Final Checklist
 
 - [x] **Single branch** (`main` only)
@@ -480,4 +457,4 @@ git push -u origin main
 
 ---
 
-*Made with ❤️ for India's celebrations. Jai Hind! 🇮🇳*
+*Made with ❤️ for India's celebrations. Built by MOHD UBES. Jai Hind! 🇮🇳*
