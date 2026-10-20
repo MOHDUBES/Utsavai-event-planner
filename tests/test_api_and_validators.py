@@ -564,3 +564,12 @@ class TestAIServiceMocked:
 
             # AI call made only once due to cache
             assert call_count == 1
+
+    def test_backend_config_reexport(self):
+        """Validate backend.config re-exports Settings and get_settings."""
+        from backend.config import Settings as ConfigSettings
+        from backend.config import get_settings as config_get_settings
+
+        cfg = config_get_settings()
+        assert cfg is not None
+        assert isinstance(cfg, ConfigSettings)

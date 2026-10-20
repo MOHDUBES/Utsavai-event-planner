@@ -184,11 +184,8 @@ async def _process_chat_message(
     if any(word in message_lower for word in ["reschedule", "change date", "move to", "postpone"]):
         return await _handle_reschedule(plan, msg.message)
 
-    # --- Handle "add more guests" / "reduce guests" ---
-    if any(
-        word in message_lower
-        for word in ["more guests", "add guests", "fewer guests", "reduce guests", "change guests"]
-    ):
+    # --- Handle "add more guests" / "reduce guests" / guest queries ---
+    if "guest" in message_lower:
         return await _handle_guest_change(plan, msg.message)
 
     # --- Handle budget questions ---
@@ -260,7 +257,7 @@ async def _process_chat_message(
                 from google import genai
 
                 client = genai.Client(api_key=settings.gemini_api_key)
-                model_name = getattr(settings, "gemini_model", "gemini-2.5-flash")
+                model_name = getattr(settings, "gemini_model", "gemini-3.8-flash")
                 interaction = client.interactions.create(
                     model=model_name,
                     input=f"{SYSTEM_PROMPT}\n\n{context_prompt}",

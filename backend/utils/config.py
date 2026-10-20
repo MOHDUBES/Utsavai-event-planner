@@ -40,7 +40,7 @@ class Settings(BaseSettings):
 
     # API keys & model identifiers — never log keys
     gemini_api_key: str = Field(default="")
-    gemini_model: str = Field(default="gemini-2.5-flash")
+    gemini_model: str = Field(default="gemini-3.8-flash")
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
 

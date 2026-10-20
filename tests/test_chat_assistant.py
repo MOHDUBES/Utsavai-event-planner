@@ -153,3 +153,103 @@ class TestChatAssistantEngineReRun:
         assert data["is_plan_updated"] is True
         assert data["updated_plan"] is not None
         assert "saved" in data["reply"].lower()
+
+    async def test_chat_timeline_query(self, client: AsyncClient, wedding_payload: dict):
+        """Ask chat about timeline or schedule."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "When are my critical timeline tasks scheduled?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert "Event Timeline" in data["reply"]
+        assert "Critical Tasks" in data["reply"]
+
+    async def test_chat_vendor_query(self, client: AsyncClient, wedding_payload: dict):
+        """Ask chat about vendor bookings or photographers."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "Which photographer and vendor should I book first?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert "Key Vendors to Book" in data["reply"]
+
+    async def test_chat_guest_count_change(self, client: AsyncClient, wedding_payload: dict):
+        """Ask chat about increasing guest count."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "What happens if we invite 300 guests?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert "Guest Count Change" in data["reply"]
+        assert "catering impact" in data["reply"].lower()
+
+    async def test_chat_guest_count_general(self, client: AsyncClient, wedding_payload: dict):
+        """Ask chat general guest count change question without number."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "How do I change the guest count?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert "submit a new plan" in data["reply"].lower()
+
+    async def test_chat_reschedule_months(self, client: AsyncClient, wedding_payload: dict):
+        """Reschedule event by months."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "Can we postpone the event by 2 months?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert data["is_plan_updated"] is True
+        assert "Rescheduled Successfully" in data["reply"]
+
+    async def test_chat_general_ai_fallback(self, client: AsyncClient, wedding_payload: dict):
+        """General non-engine question should return helpful conversational prompt."""
+        plan_res = await client.post("/api/v1/plan", json=wedding_payload)
+        session_id = plan_res.json()["session_id"]
+
+        chat_res = await client.post(
+            "/api/v1/chat",
+            json={
+                "session_id": session_id,
+                "message": "Hello, how are you today?",
+            },
+        )
+        assert chat_res.status_code == 200
+        data = chat_res.json()
+        assert "reply" in data
+        assert len(data["reply"]) > 10
