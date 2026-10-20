@@ -118,11 +118,23 @@
   }
 }
 
-/* ── 3. Reset & Base (Mobile-First) ──────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+fieldset {
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+}
+
+legend {
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 html {
@@ -586,8 +598,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Form fields – Always at least 16px to prevent iOS auto-zoom */
-.form-step { display: none; }
-.form-step.active { display: block; animation: fadeIn 0.3s ease; }
+.form-step {
+  display: none;
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  outline: none !important;
+}
+.form-step.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
 
 .form-grid {
   display: grid;
