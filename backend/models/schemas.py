@@ -122,12 +122,28 @@ class EventRequest(BaseModel):
     )
     @classmethod
     def strip_and_sanitize_strings(cls, v: Any) -> str:
-        """Strip whitespace; remove potential prompt-injection markers."""
+        """Strip whitespace; remove HTML tags and potential prompt-injection markers."""
         if not isinstance(v, str):
             return str(v) if v is not None else ""
         v = v.strip()
+
+        # Remove HTML/script tags before reaching LLM
+        import re
+
+        v = re.sub(r"<[^>]+>", "", v)
+
         # Remove common prompt-injection patterns
-        dangerous = ["ignore previous", "system prompt", "forget", "jailbreak", "###", "---"]
+        dangerous = [
+            "ignore previous instructions",
+            "ignore previous",
+            "system prompt",
+            "system:",
+            "###system",
+            "<|im_start|>",
+            "jailbreak",
+            "###",
+            "---",
+        ]
         v_lower = v.lower()
         for pat in dangerous:
             if pat in v_lower:
