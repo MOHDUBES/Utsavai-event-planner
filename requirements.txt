@@ -1,32 +1,18 @@
-# UtsavAI – Python dependencies
-# Install with: pip install -r requirements.txt
+# UtsavAI – Python runtime dependencies for Vercel & Production
 
 # ── Web Framework ─────────────────────────────────────────────
-fastapi==0.115.5
-uvicorn[standard]==0.32.1
-python-multipart==0.0.12
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
 
 # ── Validation & Settings ─────────────────────────────────────
 pydantic>=2.12.5
-pydantic-settings>=2.6.1
-python-dotenv==1.0.1
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.0
+
+# ── Rate Limiting ─────────────────────────────────────────────
+slowapi>=0.1.9
 
 # ── AI Providers ─────────────────────────────────────────────
 google-genai>=2.25.0
 openai>=1.58.0
 anthropic>=0.40.0
-
-# ── HTTP & Async ──────────────────────────────────────────────
-httpx==0.28.1
-anyio==4.7.0
-
-# ── Rate Limiting ─────────────────────────────────────────────
-slowapi==0.1.9
-
-# ── Security Headers ──────────────────────────────────────────
-secure==0.3.0
-
-# ── Utilities ─────────────────────────────────────────────────
-cachetools==5.5.0
-python-dateutil==2.9.0.post0
-
