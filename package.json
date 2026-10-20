@@ -1,0 +1,20 @@
+{
+  "name": "utsavai-event-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UtsavAI - Smart Indian Event & Festival Budget Planner",
+  "scripts": {
+    "dev": "python dev.py",
+    "start": "python dev.py",
+    "test": "pytest",
+    "lint": "ruff check . && ruff format --check ."
+  },
+  "keywords": [
+    "utsavai",
+    "event-planner",
+    "fastapi",
+    "python"
+  ],
+  "author": "UtsavAI Team",
+  "license": "MIT"
+}
