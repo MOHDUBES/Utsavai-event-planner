@@ -212,7 +212,8 @@ make test-cov
 | `tests/test_ai_service.py` | 8 tests | Mocked LLM responses, malformed JSON fallback, timeouts, caching, injection scrubbing |
 | `tests/test_chat_assistant.py` | 3 tests | Engine re-run on decor cost cut, 2-week reschedule re-run, stateless plan context |
 | `tests/test_demo_scenarios.py` | 4 tests | Verification of all 3 demo scenarios (Delhi Wedding, Mumbai Birthday, Jaipur Mela) |
-| **Total** | **128 tests** | **100% passing, 85% statement coverage across core codebase** |
+| `tests/test_frontend_static.py` | 8 tests | Viewport meta (`viewport-fit=cover`), PWA manifest integrity, asset paths, HTTP 200 |
+| **Total** | **136 tests** | **100% passing, 86% statement coverage across core codebase** |
 
 #### Real Test Suite Execution Output
 
@@ -220,19 +221,20 @@ make test-cov
 ============================= test session starts =============================
 platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
 plugins: anyio-4.14.2, asyncio-1.4.0, cov-7.1.0
-collected 128 items
+collected 136 items
 
 tests/test_ai_service.py ........                                        [  6%]
-tests/test_api_and_validators.py ...................................     [ 33%]
-...............                                                          [ 45%]
-tests/test_budget_engine.py ...............................              [ 69%]
-tests/test_chat_assistant.py ...                                         [ 71%]
-tests/test_demo_scenarios.py ....                                        [ 74%]
-tests/test_timeline_engine.py ....................                       [ 90%]
+tests/test_api_and_validators.py ...................................     [ 32%]
+...............                                                          [ 43%]
+tests/test_budget_engine.py ...............................              [ 65%]
+tests/test_chat_assistant.py ...                                         [ 68%]
+tests/test_demo_scenarios.py ....                                        [ 71%]
+tests/test_frontend_static.py ........                                   [ 76%]
+tests/test_timeline_engine.py ....................                       [ 91%]
 tests/test_vendor_engine.py ............                                 [100%]
 
-============================= 128 passed in ~8s ==============================
-Statement coverage: 85%
+============================= 136 passed in ~76s =============================
+Statement coverage: 86%
 ```
 
 ---
@@ -286,6 +288,41 @@ Statement coverage: 85%
 | **Reduced Motion** | `@media (prefers-reduced-motion: reduce)` disables all animations |
 | **Error Announcements** | Form validation errors announced via `aria-live="assertive"` |
 | **i18n** | English + Hindi toggle for labels and descriptions |
+
+---
+
+## 📱 Mobile & Responsive Design
+
+UtsavAI is engineered with a **mobile-first architecture** designed to feel native, responsive, and tactile on small phones (320px–430px) as well as tablets and desktops:
+
+### 1. Breakpoints & Viewport Adaptation
+- **Tested Widths:** `320px` (iPhone SE / compact devices), `360px` (standard mobile), `390px` (iPhone 12/13/14), `414px` (iPhone Plus/XR), `430px` (iPhone Pro Max), `768px` (iPads/tablets), and `1280px` (laptops/desktops).
+- **Mobile-First CSS:** Base styles target small touchscreens first, followed by min-width progressive enhancements:
+  - `@media (min-width: 600px)`: Tablet 2-column layouts and expanded navigation.
+  - `@media (min-width: 900px)`: Desktop cards, side-by-side forms, and expanded charts.
+  - `@media (min-width: 1200px)`: Large desktop wide canvas.
+- **Viewport & Notch Support:** `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` paired with `env(safe-area-inset-*)` guarantees seamless rendering around camera notches, dynamic islands, and bottom home gesture indicators.
+- **Dynamic Viewports (`100dvh`):** Full-height containers (loading overlay, mobile chat drawer) utilize dynamic viewport units (`100dvh`) to avoid sudden jumps when mobile address bars collapse/expand.
+
+### 2. Touch Targets & Form Ergonomics
+- **44×44px Touch Targets:** Strict adherence to WCAG 2.5.5 target size; all buttons, chips, tabs, demo cards, and toggles provide a minimum 44×44px active touch area with `touch-action: manipulation`.
+- **Zero iOS Auto-Zoom:** All form inputs, selects, and textareas enforce a minimum `16px` font size, preventing unwanted iOS Safari page magnification on focus.
+- **Smart Keypads & Attributes:** Inputs provide semantic `inputmode="numeric"` for guests and budget, `type="date"` with auto-min/defaults, and explicit autocomplete configurations.
+- **Virtual Keyboard Awareness:** Focused inputs automatically trigger smooth `scrollIntoView({ block: 'nearest' })`, ensuring mobile software keyboards never occlude active form fields or the chat input.
+- **Sticky Wizard Action Bar:** On small viewports, Next/Back actions stay anchored at the bottom of the screen with safe-area padding for effortless one-handed thumb interaction.
+
+### 3. Small-Screen Component Polish
+- **Horizontally Scrollable Tabs:** Result navigation uses CSS scroll-snap (`scroll-snap-type: x mandatory`) with hidden scrollbars, center-alignment on active tab selection, and full keyboard arrow navigation.
+- **SVG Donut Chart:** Budget breakdown renders a scalable SVG donut chart with a center total label in compact INR (`₹10L`, `₹40K`), paired with a clean, stacked category legend below it.
+- **Stacked Cards for Lists:** Vendor checklist items and timeline tasks convert from wide tables into touch-friendly cards with high-contrast priority chips and large 44px hit-box checkboxes.
+- **Full-Width Chat Assistant:** Conversational drawer spans 100% width on mobile with max 85% speech bubbles, a pinned bottom input, and swipeable horizontal quick-suggestion chips.
+- **Web Share API (`navigator.share`):** Action bar incorporates native system sharing for instant distribution to WhatsApp/Messages, with automatic fallback to Markdown file download.
+
+### 4. Progressive Web App (PWA)
+- **Manifest:** Configured with `display: standalone`, `theme_color`, and `background_color`.
+- **Maskable Icons:** Generated high-resolution 192×192 and 512×512 maskable PNG icons (< 6 KB each, well below the 20 KB budget).
+- **Dynamic Theme Color:** `<meta name="theme-color">` dynamically updates between dark (`#0A0A14`) and light (`#FFF7ED`) modes to match the browser address bar chrome.
+- **System Fonts:** Pure system font stack eliminates external web font requests, zero render-blocking, and instant cold start.
 
 ---
 
@@ -378,13 +415,15 @@ utsavai-event-planner/
 │   │   ├── logo.svg             # Light theme full logo
 │   │   ├── logo-dark.svg        # Dark theme full logo
 │   │   ├── icon.svg             # Square brand emblem
+│   │   ├── icon-192.png         # 192x192 maskable PWA icon (< 20 KB)
+│   │   ├── icon-512.png         # 512x512 maskable PWA icon (< 20 KB)
 │   │   ├── favicon.svg          # 32x32 tab icon
 │   │   ├── apple-touch-icon.png # 180x180 touch icon (< 20 KB)
 │   │   ├── og-image.svg         # 1200x630 social preview card
 │   │   └── icons/               # 10 category SVGs & sprite.svg
 │   └── static/
 │       ├── css/
-│       │   ├── style.css        # Main stylesheet
+│       │   ├── style.css        # Mobile-first stylesheet (320px–430px base + min-width queries)
 │       │   └── theme.css        # WCAG AA brand design tokens & animations
 │       └── js/app.js            # Vanilla JS application
 ├── tests/
@@ -395,6 +434,7 @@ utsavai-event-planner/
 │   ├── test_budget_engine.py    # Deterministic budget calculation tests
 │   ├── test_chat_assistant.py   # Chat assistant engine re-run tests
 │   ├── test_demo_scenarios.py   # Verification of all 3 demo scenarios
+│   ├── test_frontend_static.py  # Viewport meta, asset integrity & PWA tests
 │   ├── test_timeline_engine.py  # Backward planning timeline tests
 │   └── test_vendor_engine.py    # Vendor checklist engine tests
 ├── docs/

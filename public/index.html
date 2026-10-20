@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description"
     content="UtsavAI – India's smartest AI-powered event planner for weddings, birthdays, and cultural celebrations. Plan your perfect event with budgets, timelines, and vendor checklists." />
   <meta name="keywords"
@@ -33,11 +33,6 @@
   <meta name="twitter:image" content="/assets/og-image.svg" />
 
   <title>UtsavAI – Smart Celebration &amp; Event Planner</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
-    rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/theme.css" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
@@ -179,7 +174,7 @@
                     Event Date
                   </label>
                   <input type="date" id="event_date" name="event_date" class="form-input" required aria-required="true"
-                    aria-describedby="event_date-hint" />
+                    autocomplete="off" aria-describedby="event_date-hint" />
                   <span id="event_date-hint" class="form-hint">Must be a future date</span>
                   <span class="form-error" role="alert" aria-live="polite"></span>
                 </div>
@@ -212,7 +207,8 @@
                     Number of Guests
                   </label>
                   <input type="number" id="guest_count" name="guest_count" class="form-input" placeholder="e.g. 200"
-                    required aria-required="true" min="1" max="10000" aria-describedby="guest_count-hint" />
+                    required aria-required="true" min="1" max="10000" inputmode="numeric" autocomplete="off"
+                    aria-describedby="guest_count-hint" />
                   <span id="guest_count-hint" class="form-hint">1 – 10,000 guests</span>
                   <span class="form-error" role="alert" aria-live="polite"></span>
                 </div>
@@ -225,7 +221,7 @@
                     <span class="input-prefix" aria-hidden="true">₹</span>
                     <input type="number" id="total_budget_inr" name="total_budget_inr" class="form-input"
                       placeholder="e.g. 1000000" required aria-required="true" min="1000" max="100000000"
-                      aria-describedby="budget-hint" />
+                      inputmode="numeric" autocomplete="off" aria-describedby="budget-hint" />
                   </div>
                   <span id="budget-hint" class="form-hint">
                     <span id="budget-display">Enter your total budget</span>
@@ -373,6 +369,9 @@
             <div class="plan-meta" id="plan-meta"></div>
           </div>
           <div class="plan-actions" role="group" aria-label="Plan actions">
+            <button id="share-btn" class="btn btn-outline btn-sm" aria-label="Share plan">
+              <span aria-hidden="true">🔗</span> Share
+            </button>
             <button id="export-md-btn" class="btn btn-outline btn-sm" aria-label="Export plan as Markdown">
               <span aria-hidden="true">📄</span> Export MD
             </button>
@@ -455,6 +454,12 @@
                   <p>What would you like to know?</p>
                 </div>
               </div>
+            </div>
+            <div class="chat-quick-suggestions" role="group" aria-label="Suggested follow-up questions">
+              <button type="button" class="chat-chip" data-prompt="Can you cut decor cost by 20%?">✂️ Cut decor 20%</button>
+              <button type="button" class="chat-chip" data-prompt="Please reschedule 2 weeks later">📅 Reschedule 2 weeks</button>
+              <button type="button" class="chat-chip" data-prompt="What questions should I ask the caterer?">🍽️ Caterer questions</button>
+              <button type="button" class="chat-chip" data-prompt="How can I reduce overall costs by 15%?">💡 Save 15%</button>
             </div>
             <form id="chat-form" class="chat-input-form" aria-label="Chat with assistant">
               <label for="chat-input" class="sr-only">Type your question</label>

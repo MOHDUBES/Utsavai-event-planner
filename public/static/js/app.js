@@ -136,6 +136,17 @@ function initTheme() {
   const savedTheme = localStorage.getItem('utsavai_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateThemeIcon(savedTheme);
+  updateThemeColorMeta(savedTheme);
+}
+
+function updateThemeColorMeta(theme) {
+  let meta = $('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', theme === 'dark' ? '#0A0A14' : '#FFF7ED');
 }
 
 function updateThemeIcon(theme) {
@@ -153,6 +164,7 @@ $('#theme-toggle')?.addEventListener('click', () => {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('utsavai_theme', next);
   updateThemeIcon(next);
+  updateThemeColorMeta(next);
   announce(`Switched to ${next} mode`);
 });
 
@@ -625,6 +637,71 @@ function renderSanityChecks(checks) {
 }
 
 /* ── 9b. Budget ── */
+function renderDonutChart(allocations, totalInr) {
+  const colors = [
+    '#F59E0B', '#6366F1', '#10B981', '#EC4899',
+    '#8B5CF6', '#3B82F6', '#F97316', '#14B8A6',
+    '#EAB308', '#06B6D4', '#84CC16', '#A855F7'
+  ];
+  const radius = 68;
+  const circumference = 2 * Math.PI * radius;
+  let accumulatedPercent = 0;
+
+  const circles = allocations.map((alloc, idx) => {
+    const color = colors[idx % colors.length];
+    const pct = alloc.percentage;
+    const strokeDasharray = `${(pct / 100) * circumference} ${circumference}`;
+    const strokeDashoffset = -((accumulatedPercent / 100) * circumference);
+    accumulatedPercent += pct;
+
+    return `
+      <circle
+        cx="100" cy="100" r="${radius}"
+        fill="transparent"
+        stroke="${color}"
+        stroke-width="22"
+        stroke-dasharray="${strokeDasharray}"
+        stroke-dashoffset="${strokeDashoffset}"
+        stroke-linecap="round"
+        class="donut-segment"
+      >
+        <title>${escapeHtml(alloc.category)}: ${pct.toFixed(1)}% (${formatINR(alloc.amount_inr)})</title>
+      </circle>
+    `;
+  }).join('');
+
+  const legend = allocations.map((alloc, idx) => {
+    const color = colors[idx % colors.length];
+    return `
+      <div class="legend-item" role="listitem">
+        <span class="legend-cat">
+          <span class="legend-color" style="background-color: ${color};" aria-hidden="true"></span>
+          <span>${escapeHtml(alloc.category)}</span>
+        </span>
+        <span class="legend-val">${alloc.percentage.toFixed(0)}% · ${formatINR(alloc.amount_inr)}</span>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="budget-visual">
+      <div class="donut-chart-container">
+        <svg class="donut-chart-svg" viewBox="0 0 200 200" role="img" aria-label="Budget distribution donut chart">
+          <g transform="rotate(-90 100 100)">
+            <circle cx="100" cy="100" r="${radius}" fill="transparent" stroke="var(--color-bg-3)" stroke-width="22" />
+            ${circles}
+          </g>
+          <text x="100" y="94" text-anchor="middle" font-size="16" font-weight="800" fill="var(--color-text)" font-family="var(--font-sans)">${formatINR(totalInr)}</text>
+          <text x="100" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="var(--color-text-muted)" letter-spacing="1" font-family="var(--font-sans)">TOTAL</text>
+        </svg>
+      </div>
+      <div class="donut-legend" role="list" aria-label="Budget categories legend">
+        ${legend}
+      </div>
+    </div>
+  `;
+}
+
 function renderBudget(budget) {
   const container = $('#budget-content');
   const maxAmount = Math.max(...budget.allocations.map(a => a.amount_inr));
@@ -653,6 +730,8 @@ function renderBudget(budget) {
       </div>
     </div>
 
+    ${renderDonutChart(budget.allocations, budget.total_inr)}
+
     <div class="budget-chart">
       <h3 class="chart-title">Budget Allocation</h3>
       <div role="list" aria-label="Budget breakdown by category">
@@ -660,7 +739,7 @@ function renderBudget(budget) {
           <div class="budget-bar-item" role="listitem">
             <div class="bar-header">
               <span class="bar-category">${getCategorySvgIcon(alloc.category)}<span>${escapeHtml(alloc.category)}</span></span>
-              <span class="bar-amount">${escapeHtml(alloc.percentage.toFixed(1))}% · ${formatINRFull(alloc.amount_inr)}</span>
+              <span class="bar-amount">${escapeHtml(alloc.percentage.toFixed(1))}% · ${formatINR(alloc.amount_inr)}</span>
             </div>
             <div class="bar-track" role="progressbar"
               aria-valuenow="${alloc.percentage.toFixed(0)}"
@@ -902,6 +981,9 @@ function switchTab(tabId) {
     t.classList.toggle('active', active);
     t.setAttribute('aria-selected', String(active));
     t.setAttribute('tabindex', active ? '0' : '-1');
+    if (active) {
+      t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   });
 
   $$('.tab-panel').forEach(p => {
@@ -1050,6 +1132,44 @@ $('#save-btn')?.addEventListener('click', () => {
   }
 });
 
+$('#share-btn')?.addEventListener('click', async () => {
+  if (!currentPlan) {
+    announce('No plan to share. Generate a plan first.', 'assertive');
+    return;
+  }
+  const req = currentPlan.event_request;
+  const shareData = {
+    title: `${titleCase(req.event_type.replace(/_/g, ' '))} Plan – UtsavAI`,
+    text: `UtsavAI celebration plan for ${req.guest_count} guests in ${req.city} with budget ${formatINR(currentPlan.budget.total_inr)}.`,
+    url: window.location.href,
+  };
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      announce('Plan shared');
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.warn('Web Share failed, falling back to download:', err);
+    }
+  }
+  // Graceful fallback to markdown download
+  const md = generateMarkdown(currentPlan);
+  downloadFile(md, 'utsavai-plan.md', 'text/markdown');
+  announce('Plan exported as Markdown file');
+});
+
+// Quick suggestion chips in Chat
+$$('.chat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const input = $('#chat-input');
+    if (!input) return;
+    input.value = chip.textContent.trim();
+    input.focus();
+    $('#chat-form')?.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+});
+
 $('#new-plan-btn')?.addEventListener('click', () => {
   $('#results-section').classList.add('hidden');
   $('#planning-section').scrollIntoView({ behavior: 'smooth' });
@@ -1128,9 +1248,21 @@ ${plan.ai_personalization.speech_toast}
    13. Initialization
    ══════════════════════════════════════════════════════════ */
 
+function setupMobileFocusScroll() {
+  const inputs = $$('.form-input, .form-select, .form-textarea, .chat-input');
+  inputs.forEach(el => {
+    el.addEventListener('focus', () => {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 300);
+    });
+  });
+}
+
 function init() {
   initTheme();
   applyTranslations();
+  setupMobileFocusScroll();
 
   // Set minimum date to today
   const dateInput = $('#event_date');
