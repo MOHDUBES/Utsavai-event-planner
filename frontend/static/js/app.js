@@ -67,6 +67,8 @@ let currentLang = 'en';
 const translations = {
   en: {
     hero_subtitle: "AI-powered planning for weddings, birthdays, Diwali melas & more. Instant budget breakdown, vendor checklists, and personalized ideas — in INR.",
+    btn_start_planning: "Start Planning",
+    btn_try_demo: "Try a Demo",
     form_title: "📋 Tell Us About Your Event",
     form_subtitle: "Fill in the details and we'll generate a complete plan in seconds.",
     label_event_type: "Event Type",
@@ -83,9 +85,16 @@ const translations = {
     label_requirements: "Special Requirements (optional)",
     label_priorities: "What matters most to you?",
     btn_generate: "Generate My Plan",
+    tab_budget: "💰 Budget",
+    tab_timeline: "📅 Timeline",
+    tab_vendors: "📋 Vendors",
+    tab_ai: "✨ Ideas",
+    tab_chat: "💬 Chat",
   },
   hi: {
     hero_subtitle: "शादी, जन्मदिन, दिवाली मेले और अन्य उत्सवों के लिए AI-संचालित योजना। तुरंत बजट, वेंडर सूची और व्यक्तिगत विचार — भारतीय रुपये में।",
+    btn_start_planning: "योजना शुरू करें",
+    btn_try_demo: "डेमो आज़माएं",
     form_title: "📋 अपने उत्सव के बारे में बताएं",
     form_subtitle: "विवरण भरें और हम कुछ ही सेकंड में पूरी योजना तैयार करेंगे।",
     label_event_type: "कार्यक्रम का प्रकार",
@@ -102,13 +111,18 @@ const translations = {
     label_requirements: "विशेष आवश्यकताएं (वैकल्पिक)",
     label_priorities: "आपकी प्राथमिकताएं क्या हैं?",
     btn_generate: "मेरी योजना बनाएं",
+    tab_budget: "💰 बजट",
+    tab_timeline: "📅 समयरेखा",
+    tab_vendors: "📋 वेंडर्स",
+    tab_ai: "✨ विचार",
+    tab_chat: "💬 चैट",
   },
 };
 
 function applyTranslations() {
   $$('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if (translations[currentLang][key]) {
+    if (translations[currentLang] && translations[currentLang][key]) {
       el.textContent = translations[currentLang][key];
     }
   });
@@ -146,6 +160,16 @@ $('#lang-toggle')?.addEventListener('click', () => {
   currentLang = currentLang === 'en' ? 'hi' : 'en';
   const btn = $('#lang-toggle');
   btn.setAttribute('aria-pressed', currentLang === 'hi' ? 'true' : 'false');
+  btn.setAttribute('aria-label', currentLang === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
+  document.documentElement.setAttribute('lang', currentLang);
+
+  const langEn = btn.querySelector('.lang-en');
+  const langHi = btn.querySelector('.lang-hi');
+  if (langEn && langHi) {
+    langEn.classList.toggle('hidden', currentLang === 'hi');
+    langHi.classList.toggle('hidden', currentLang === 'en');
+  }
+
   applyTranslations();
   announce(currentLang === 'hi' ? 'हिंदी में बदल दिया गया' : 'Switched to English');
 });

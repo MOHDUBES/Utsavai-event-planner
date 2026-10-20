@@ -465,13 +465,17 @@ h1, h2, h3, h4, h5, h6 {
   transition: opacity var(--transition);
 }
 
-.demo-card:hover {
+.demo-card:hover,
+.demo-card:focus-visible {
   border-color: var(--color-primary);
   transform: translateY(-4px);
   box-shadow: var(--shadow-glow);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
-.demo-card:hover::before { opacity: 1; }
+.demo-card:hover::before,
+.demo-card:focus-visible::before { opacity: 1; }
 
 .demo-card-icon { font-size: 2.5rem; margin-bottom: var(--space-3); display: block; }
 .demo-card-title { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2); }
