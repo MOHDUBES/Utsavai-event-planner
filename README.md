@@ -328,8 +328,6 @@ utsavai-event-planner/
 ├── frontend/
 │   ├── index.html               # Single-page app with brand meta & switching
 │   ├── manifest.webmanifest     # Web app manifest
-│   ├── css/
-│   │   └── theme.css            # WCAG AA brand design tokens & animations
 │   ├── assets/
 │   │   ├── logo.svg             # Light theme full logo
 │   │   ├── logo-dark.svg        # Dark theme full logo

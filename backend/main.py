@@ -115,9 +115,6 @@ def create_app() -> FastAPI:
         assets_dir = frontend_dir / "assets"
         if assets_dir.exists():
             app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
-        css_dir = frontend_dir / "css"
-        if css_dir.exists():
-            app.mount("/css", StaticFiles(directory=str(css_dir)), name="css")
         app.mount("/static", StaticFiles(directory=str(frontend_dir / "static")), name="static")
 
         @app.get("/", include_in_schema=False)

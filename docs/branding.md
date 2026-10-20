@@ -27,7 +27,7 @@ All colors meet or exceed WCAG AA accessibility contrast standards across light 
 | **Indigo** | `#3730A3` | AI &amp; Modern Technology Accent | **12.2 : 1** (Passes AAA) | **7.8 : 1** (Passes AA &amp; AAA) |
 | **Cream** | `#FFF7ED` | Celebration Canvas &amp; Luminous Glow | Surface / Background | **16.2 : 1** (Passes AAA) |
 
-### CSS Variables (`frontend/css/theme.css`)
+### CSS Variables (`frontend/static/css/theme.css`)
 ```css
 :root {
   --brand-saffron: #F59E0B;
