@@ -58,6 +58,32 @@ function announce(message, priority = 'polite') {
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
+/** Extract human-readable error string from API response data */
+function extractErrorMessage(data, fallback = 'Failed to process request.') {
+  if (!data) return fallback;
+  if (typeof data === 'string') return data;
+  if (typeof data.detail === 'string') return data.detail;
+  if (Array.isArray(data.detail)) {
+    return data.detail
+      .map(item => {
+        if (typeof item === 'string') return item;
+        if (item && item.msg) {
+          const cleanMsg = item.msg.replace(/^Value error,\s*/i, '');
+          const loc = Array.isArray(item.loc) ? item.loc.filter(l => l !== 'body') : [];
+          const field = loc.length > 0 ? `${loc.join('.').replace(/_/g, ' ')}: ` : '';
+          return `${field}${cleanMsg}`;
+        }
+        return JSON.stringify(item);
+      })
+      .join('\n');
+  }
+  if (typeof data.detail === 'object' && data.detail !== null) {
+    return data.detail.message || data.detail.msg || JSON.stringify(data.detail);
+  }
+  if (data.message) return data.message;
+  return fallback;
+}
+
 /* ══════════════════════════════════════════════════════════
    1. i18n (English / Hindi toggle)
    ══════════════════════════════════════════════════════════ */
@@ -483,7 +509,14 @@ let currentSessionId = null;
 
 $('#event-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (!validateStep(currentStep)) return;
+
+  // Validate all steps from 1 to 3 before submitting
+  for (let s = 1; s <= 3; s++) {
+    if (!validateStep(s)) {
+      goToStep(s);
+      return;
+    }
+  }
 
   const formData = collectFormData();
   if (!formData) return;
@@ -500,9 +533,9 @@ $('#event-form')?.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      const msg = data.detail || 'Failed to generate plan.';
+      const msg = extractErrorMessage(data, 'Failed to generate plan.');
       announce(msg, 'assertive');
-      alert(`Error: ${msg}`);
+      alert(`Error:\n${msg}`);
       return;
     }
 
@@ -512,8 +545,9 @@ $('#event-form')?.addEventListener('submit', async (e) => {
 
   } catch (err) {
     console.error('Plan generation failed:', err);
-    announce('Network error. Please check your connection and try again.', 'assertive');
-    alert('Network error. Please try again.');
+    const msg = extractErrorMessage(err, 'Network error. Please check your connection.');
+    announce(msg, 'assertive');
+    alert(`Error: ${msg}`);
   } finally {
     hideLoading();
   }

@@ -13,8 +13,10 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -98,6 +100,35 @@ def create_app() -> FastAPI:
         return response
 
     # ── Global error handlers ──────────────────────────────────
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        """Return clean, user-friendly error messages for validation errors."""
+        messages: list[str] = []
+        clean_errors: list[dict[str, Any]] = []
+        for err in exc.errors():
+            msg = str(err.get("msg", "Invalid value"))
+            if msg.startswith("Value error, "):
+                msg = msg[len("Value error, ") :]
+            loc = [str(part) for part in err.get("loc", []) if part != "body"]
+            field_name = loc[-1] if loc else ""
+            if field_name:
+                field_label = field_name.replace("_", " ").title()
+                messages.append(f"{field_label}: {msg}")
+            else:
+                messages.append(msg)
+            clean_errors.append(
+                {
+                    "loc": [str(part) for part in err.get("loc", [])],
+                    "msg": msg,
+                    "type": str(err.get("type", "validation_error")),
+                }
+            )
+        joined_msg = " | ".join(messages) if messages else "Invalid input data provided."
+        return JSONResponse(
+            status_code=422,
+            content={"detail": joined_msg, "errors": clean_errors},
+        )
+
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
         """Return safe error messages — no stack traces."""
