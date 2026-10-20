@@ -68,34 +68,25 @@
 
   <!-- ── Main Logo & Icon Mark ── -->
   <g transform="translate(100, 180)">
-    <!-- Icon Mark (Scaled 2.5x) -->
+    <!-- Icon Mark (Scaled 2.4x) -->
     <g transform="scale(2.4)">
-      <!-- Diya Base / Tick Mark -->
-      <path d="M 12 36 C 15 44 22 50 30 50 C 37 50 44 44 54 22" 
-            fill="none" 
-            stroke="url(#ogTick)" 
-            stroke-width="5" 
-            stroke-linecap="round" 
-            stroke-linejoin="round" />
-            
-      <!-- Rim glow -->
-      <path d="M 13 36 C 18 41 27 42 33 40" 
-            fill="none" 
-            stroke="#FBBF24" 
-            stroke-width="2.5" 
-            stroke-linecap="round" />
+      <!-- Diagonal Star (Indigo Radiance) -->
+      <g transform="rotate(45 32 32)">
+        <path d="M 32 10 Q 32 32 54 32 Q 32 32 32 54 Q 32 32 10 32 Q 32 32 32 10 Z"
+              fill="url(#ogTick)" />
+      </g>
 
-      <!-- Flame -->
-      <path d="M 30 10 C 36 18 42 26 40 34 C 38 41 34 43 30 43 C 26 43 22 41 20 34 C 18 26 24 18 30 10 Z" 
+      <!-- Primary Star (Gold Radiance) -->
+      <path d="M 32 5 Q 32 32 59 32 Q 32 32 32 59 Q 32 32 5 32 Q 32 32 32 5 Z"
             fill="url(#ogFlame)" />
 
-      <!-- Core Glow -->
-      <path d="M 30 18 C 33 23 35 27 34 33 C 33 37 31 39 30 39 C 29 39 27 37 26 33 C 25 27 27 23 30 18 Z" 
-            fill="url(#ogCore)" />
+      <!-- Facet Highlight -->
+      <path d="M 32 5 Q 32 32 59 32 L 32 32 Z" fill="#FFFFFF" opacity="0.3" />
 
-      <!-- AI Sparkle -->
-      <path d="M 50 6 Q 50 12 56 12 Q 50 12 50 18 Q 50 12 44 12 Q 50 12 50 6 Z" 
-            fill="#FDE047" />
+      <!-- Central Diamond Core -->
+      <polygon points="32,20 44,32 32,44 20,32" fill="url(#ogCore)" />
+      <circle cx="32" cy="32" r="3.2" fill="#F59E0B" />
+      <circle cx="32" cy="32" r="1.5" fill="#FFFFFF" />
     </g>
 
     <!-- Brand Name -->

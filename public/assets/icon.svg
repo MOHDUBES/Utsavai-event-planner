@@ -1,54 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="icon-title icon-desc">
   <title id="icon-title">UtsavAI Icon</title>
-  <desc id="icon-desc">A stylized golden diya flame cradled by a planning checkmark with an AI sparkle</desc>
+  <desc id="icon-desc">UtsavAI festive celebration star and AI intelligence emblem</desc>
   <defs>
-    <linearGradient id="utsavFlameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#7C2D12" />
-      <stop offset="30%" stop-color="#EA580C" />
-      <stop offset="70%" stop-color="#F59E0B" />
-      <stop offset="100%" stop-color="#FDE047" />
+    <linearGradient id="utsavGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="35%" stop-color="#F59E0B" />
+      <stop offset="85%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
     </linearGradient>
-    <linearGradient id="utsavCheckGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="utsavIndigo" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#3730A3" />
-      <stop offset="60%" stop-color="#4F46E5" />
-      <stop offset="100%" stop-color="#7C2D12" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#818CF8" />
     </linearGradient>
-    <radialGradient id="utsavCoreGlow" cx="50%" cy="50%" r="50%">
+    <radialGradient id="utsavCore" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="50%" stop-color="#FFF7ED" />
-      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0.9" />
+      <stop offset="55%" stop-color="#FFF7ED" />
+      <stop offset="100%" stop-color="#FDE68A" />
     </radialGradient>
   </defs>
 
-  <!-- Diya base & Checklist checkmark sweep -->
-  <path d="M 12 36 C 15 44 22 50 30 50 C 37 50 44 44 54 22" 
-        fill="none" 
-        stroke="url(#utsavCheckGrad)" 
-        stroke-width="5" 
-        stroke-linecap="round" 
-        stroke-linejoin="round" />
-        
-  <!-- Diya lamp rim warm accent -->
-  <path d="M 13 36 C 18 41 27 42 33 40" 
-        fill="none" 
-        stroke="#F59E0B" 
-        stroke-width="2.5" 
-        stroke-linecap="round" />
+  <!-- Ambient Glow -->
+  <circle cx="32" cy="32" r="28" fill="url(#utsavGold)" opacity="0.12" />
 
-  <!-- Outer Diya Flame -->
-  <path class="brand-flame-animated" 
-        d="M 30 10 C 36 18 42 26 40 34 C 38 41 34 43 30 43 C 26 43 22 41 20 34 C 18 26 24 18 30 10 Z" 
-        fill="url(#utsavFlameGrad)" />
+  <!-- Diagonal 4-Point Star (Indigo AI Radiance) -->
+  <g transform="rotate(45 32 32)">
+    <path d="M 32 10 Q 32 32 54 32 Q 32 32 32 54 Q 32 32 10 32 Q 32 32 32 10 Z"
+          fill="url(#utsavIndigo)" />
+  </g>
 
-  <!-- Inner Flame Core (Luminous Cream Glow) -->
-  <path d="M 30 18 C 33 23 35 27 34 33 C 33 37 31 39 30 39 C 29 39 27 37 26 33 C 25 27 27 23 30 18 Z" 
-        fill="url(#utsavCoreGlow)" />
+  <!-- Primary 4-Point Star (Gold/Saffron Festive Radiance) -->
+  <path d="M 32 5 Q 32 32 59 32 Q 32 32 32 59 Q 32 32 5 32 Q 32 32 32 5 Z"
+        fill="url(#utsavGold)" />
 
-  <!-- AI Sparkle (Upper Right) -->
-  <path d="M 50 6 Q 50 12 56 12 Q 50 12 50 18 Q 50 12 44 12 Q 50 12 50 6 Z" 
-        fill="#F59E0B" />
-        
-  <!-- Secondary Sparkle (Left Accent) -->
-  <path d="M 16 18 Q 16 21 19 21 Q 16 21 16 24 Q 16 21 13 21 Q 16 21 16 18 Z" 
-        fill="#FBBF24" opacity="0.9" />
+  <!-- Facet Highlights -->
+  <path d="M 32 5 Q 32 32 59 32 L 32 32 Z" fill="#FFFFFF" opacity="0.22" />
+  <path d="M 32 59 Q 32 32 5 32 L 32 32 Z" fill="#000000" opacity="0.14" />
+
+  <!-- Central Diamond Core (Luminous Jewel) -->
+  <polygon points="32,20 44,32 32,44 20,32" fill="url(#utsavCore)" />
+
+  <!-- Core Center Point -->
+  <circle cx="32" cy="32" r="3.2" fill="#F59E0B" />
+  <circle cx="32" cy="32" r="1.5" fill="#FFFFFF" />
+
+  <!-- 4 Micro Celebration Sparks -->
+  <circle cx="32" cy="2.5" r="1.5" fill="#FDE047" />
+  <circle cx="61.5" cy="32" r="1.5" fill="#FDE047" />
+  <circle cx="32" cy="61.5" r="1.5" fill="#FDE047" />
+  <circle cx="2.5" cy="32" r="1.5" fill="#FDE047" />
 </svg>

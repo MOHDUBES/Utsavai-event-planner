@@ -1,71 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" width="240" height="56" role="img" aria-labelledby="logo-dark-title logo-dark-desc">
   <title id="logo-dark-title">UtsavAI Logo</title>
-  <desc id="logo-dark-desc">UtsavAI brand logo for dark backgrounds with golden diya flame, checkmark, and tagline: Plan every celebration, smartly.</desc>
+  <desc id="logo-dark-desc">UtsavAI festive celebration star brand logo for dark backgrounds with tagline: Plan every celebration, smartly.</desc>
   <defs>
-    <linearGradient id="logoFlameDark" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#EA580C" />
-      <stop offset="35%" stop-color="#F59E0B" />
-      <stop offset="75%" stop-color="#FBBF24" />
-      <stop offset="100%" stop-color="#FEF08A" />
+    <linearGradient id="logoGoldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="35%" stop-color="#FDE047" />
+      <stop offset="70%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
     </linearGradient>
-    <linearGradient id="logoTickDark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#A5B4FC" />
-      <stop offset="50%" stop-color="#818CF8" />
-      <stop offset="100%" stop-color="#F59E0B" />
+    <linearGradient id="logoIndigoDark" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#A5B4FC" />
     </linearGradient>
-    <radialGradient id="logoGlowDark" cx="50%" cy="50%" r="50%">
+    <radialGradient id="logoCoreDark" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="50%" stop-color="#FFF7ED" />
-      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0.95" />
+      <stop offset="55%" stop-color="#FFF7ED" />
+      <stop offset="100%" stop-color="#FDE68A" />
     </radialGradient>
   </defs>
 
-  <!-- ── Icon Mark ── -->
-  <g transform="translate(4, 4)">
-    <!-- Diya Checkmark Base -->
-    <path d="M 8 30 C 10 37 17 42 24 42 C 30 42 36 37 44 18" 
-          fill="none" 
-          stroke="url(#logoTickDark)" 
-          stroke-width="4.2" 
-          stroke-linecap="round" 
-          stroke-linejoin="round" />
-          
-    <!-- Rim warm glow -->
-    <path d="M 9 30 C 14 34 21 35 26 33" 
-          fill="none" 
-          stroke="#FBBF24" 
-          stroke-width="2.2" 
-          stroke-linecap="round" />
+  <!-- ── Festive Star Emblem ── -->
+  <g transform="translate(6, 6)">
+    <!-- Diagonal Star (Indigo Radiance) -->
+    <g transform="rotate(45 22 22)">
+      <path d="M 22 6 Q 22 22 38 22 Q 22 22 22 38 Q 22 22 6 22 Q 22 22 22 6 Z"
+            fill="url(#logoIndigoDark)" />
+    </g>
 
-    <!-- Outer Diya Flame -->
-    <path class="brand-flame-animated" 
-          d="M 24 8 C 29 15 34 21 32 28 C 30 34 27 36 24 36 C 21 36 18 34 16 28 C 14 21 19 15 24 8 Z" 
-          fill="url(#logoFlameDark)" />
+    <!-- Primary Star (Gold Radiance) -->
+    <path d="M 22 2 Q 22 22 42 22 Q 22 22 22 42 Q 22 22 2 22 Q 22 22 22 2 Z"
+          fill="url(#logoGoldDark)" />
 
-    <!-- Inner Core -->
-    <path d="M 24 15 C 26 19 28 23 27 27 C 26 30 25 32 24 32 C 23 32 22 30 21 27 C 20 23 22 19 24 15 Z" 
-          fill="url(#logoGlowDark)" />
+    <!-- Facet Highlight -->
+    <path d="M 22 2 Q 22 22 42 22 L 22 22 Z" fill="#FFFFFF" opacity="0.3" />
 
-    <!-- AI Sparkle -->
-    <path d="M 40 5 Q 40 10 45 10 Q 40 10 40 15 Q 40 10 35 10 Q 40 10 40 5 Z" 
-          fill="#FDE047" />
+    <!-- Center Diamond Core -->
+    <polygon points="22,13 31,22 22,31 13,22" fill="url(#logoCoreDark)" />
+    <circle cx="22" cy="22" r="2.5" fill="#F59E0B" />
+    <circle cx="22" cy="22" r="1.2" fill="#FFFFFF" />
   </g>
 
   <!-- ── Wordmark & Tagline ── -->
-  <text x="56" y="31" 
-        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Inter', sans-serif" 
-        font-size="27" 
-        font-weight="700" 
+  <text x="58" y="32" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+        font-size="28" 
+        font-weight="800" 
         letter-spacing="-0.5" 
-        fill="#FFF7ED">Utsav<tspan fill="#F59E0B" font-weight="800">AI</tspan></text>
-        
-  <!-- Subtle AI Badge indicator -->
-  <circle cx="167" cy="18" r="2.5" fill="#818CF8" />
+        fill="#FFF7ED">Utsav<tspan fill="#F59E0B" font-weight="900">AI</tspan></text>
 
-  <text x="57" y="47" 
-        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Inter', sans-serif" 
+  <!-- Sparkle Accent above I -->
+  <polygon points="171,11 173,15 177,15 174,18 175,22 171,19 167,22 168,18 165,15 169,15" fill="#FDE047" />
+
+  <text x="59" y="47" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
         font-size="10.5" 
-        font-weight="500" 
+        font-weight="600" 
         letter-spacing="0.2" 
         fill="#FED7AA">Plan every celebration, smartly.</text>
 </svg>
