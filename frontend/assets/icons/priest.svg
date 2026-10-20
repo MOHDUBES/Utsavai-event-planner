@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-priest-title">
+  <title id="cat-priest-title">Priest &amp; Officiant</title>
+  <path d="M 4 19 H 20 L 17 22 H 7 L 4 19 Z" />
+  <line x1="3" y1="19" x2="21" y2="19" />
+  <path d="M 12 3 C 14 7 17 10 16 14 C 15 17 13 18 12 18 C 11 18 9 17 8 14 C 7 10 10 7 12 3 Z" />
+  <path d="M 12 8 C 13 10 14 12 13 14 C 12.5 15.5 11.5 15.5 11 14 C 10.5 12 11.5 10 12 8 Z" />
+</svg>

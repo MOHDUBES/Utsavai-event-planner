@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="og-title og-desc">
+  <title id="og-title">UtsavAI – Smart Celebration &amp; Event Planner</title>
+  <desc id="og-desc">Social preview image for UtsavAI. Plan every celebration, smartly. India's AI-powered event planning assistant.</desc>
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="ogBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0A14" />
+      <stop offset="40%" stop-color="#121226" />
+      <stop offset="100%" stop-color="#1E132D" />
+    </linearGradient>
+
+    <!-- Warm Radial Glow -->
+    <radialGradient id="ogGlow" cx="25%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.18" />
+      <stop offset="50%" stop-color="#7C2D12" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0A0A14" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Flame Gradient -->
+    <linearGradient id="ogFlame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#7C2D12" />
+      <stop offset="25%" stop-color="#EA580C" />
+      <stop offset="65%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#FEF08A" />
+    </linearGradient>
+
+    <!-- Tick Gradient -->
+    <linearGradient id="ogTick" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="60%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Core Glow -->
+    <radialGradient id="ogCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF7ED" />
+      <stop offset="100%" stop-color="#FDE68A" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="630" fill="url(#ogBg)" />
+  <rect width="1200" height="630" fill="url(#ogGlow)" />
+
+  <!-- Subtle Geometric Festive Mandala Pattern (Right Side) -->
+  <g opacity="0.08" stroke="#F59E0B" stroke-width="1.5" fill="none">
+    <circle cx="1020" cy="315" r="280" />
+    <circle cx="1020" cy="315" r="220" />
+    <circle cx="1020" cy="315" r="160" />
+    <circle cx="1020" cy="315" r="100" />
+    <circle cx="1020" cy="315" r="40" />
+    <path d="M 1020 35 L 1020 595 M 740 315 L 1300 315" />
+    <path d="M 822 117 L 1218 513 M 822 513 L 1218 117" />
+  </g>
+
+  <!-- Top Badge -->
+  <g transform="translate(100, 95)">
+    <rect width="270" height="42" rx="21" fill="#7C2D12" fill-opacity="0.5" stroke="#F59E0B" stroke-width="1.5" />
+    <text x="135" y="27" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="15" 
+          font-weight="700" 
+          letter-spacing="0.8" 
+          fill="#FFF7ED" 
+          text-anchor="middle">&#x1F1EE;&#x1F1F3; INDIA-FIRST EVENT PLANNER</text>
+  </g>
+
+  <!-- ── Main Logo & Icon Mark ── -->
+  <g transform="translate(100, 180)">
+    <!-- Icon Mark (Scaled 2.5x) -->
+    <g transform="scale(2.4)">
+      <!-- Diya Base / Tick Mark -->
+      <path d="M 12 36 C 15 44 22 50 30 50 C 37 50 44 44 54 22" 
+            fill="none" 
+            stroke="url(#ogTick)" 
+            stroke-width="5" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" />
+            
+      <!-- Rim glow -->
+      <path d="M 13 36 C 18 41 27 42 33 40" 
+            fill="none" 
+            stroke="#FBBF24" 
+            stroke-width="2.5" 
+            stroke-linecap="round" />
+
+      <!-- Flame -->
+      <path d="M 30 10 C 36 18 42 26 40 34 C 38 41 34 43 30 43 C 26 43 22 41 20 34 C 18 26 24 18 30 10 Z" 
+            fill="url(#ogFlame)" />
+
+      <!-- Core Glow -->
+      <path d="M 30 18 C 33 23 35 27 34 33 C 33 37 31 39 30 39 C 29 39 27 37 26 33 C 25 27 27 23 30 18 Z" 
+            fill="url(#ogCore)" />
+
+      <!-- AI Sparkle -->
+      <path d="M 50 6 Q 50 12 56 12 Q 50 12 50 18 Q 50 12 44 12 Q 50 12 50 6 Z" 
+            fill="#FDE047" />
+    </g>
+
+    <!-- Brand Name -->
+    <text x="175" y="85" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="82" 
+          font-weight="800" 
+          letter-spacing="-1.5" 
+          fill="#FFF7ED">Utsav<tspan fill="#F59E0B">AI</tspan></text>
+          
+    <circle cx="505" cy="45" r="7" fill="#818CF8" />
+
+    <!-- Tagline -->
+    <text x="180" y="132" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="28" 
+          font-weight="500" 
+          letter-spacing="0.5" 
+          fill="#FED7AA">Plan every celebration, smartly.</text>
+  </g>
+
+  <!-- Value Proposition Line -->
+  <text x="100" y="410" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="24" 
+        font-weight="400" 
+        fill="#E2E8F0">Weddings • Birthdays • Diwali Melas • Community Festivities • INR Budgets</text>
+
+  <!-- Feature Pill Tags -->
+  <g transform="translate(100, 460)">
+    <!-- Pill 1: Deterministic Budgets -->
+    <g transform="translate(0, 0)">
+      <rect width="220" height="48" rx="10" fill="#1E1E35" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1.5" />
+      <text x="110" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#FFF7ED" text-anchor="middle">&#x1F4B0; Smart INR Budget</text>
+    </g>
+
+    <!-- Pill 2: Backward Timeline -->
+    <g transform="translate(240, 0)">
+      <rect width="220" height="48" rx="10" fill="#1E1E35" stroke="rgba(99, 102, 241, 0.4)" stroke-width="1.5" />
+      <text x="110" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#FFF7ED" text-anchor="middle">&#x1F4C5; Reverse Timeline</text>
+    </g>
+
+    <!-- Pill 3: Vendor Checklist -->
+    <g transform="translate(480, 0)">
+      <rect width="220" height="48" rx="10" fill="#1E1E35" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1.5" />
+      <text x="110" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#FFF7ED" text-anchor="middle">&#x2705; Vendor Checklist</text>
+    </g>
+
+    <!-- Pill 4: Hybrid AI -->
+    <g transform="translate(720, 0)">
+      <rect width="230" height="48" rx="10" fill="#1E1E35" stroke="rgba(99, 102, 241, 0.4)" stroke-width="1.5" />
+      <text x="115" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#FFF7ED" text-anchor="middle">&#x2728; Hybrid GenAI Engine</text>
+    </g>
+  </g>
+
+  <!-- Footer Domain / Branding Line -->
+  <line x1="100" y1="560" x2="1100" y2="560" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+  <text x="100" y="595" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="500" fill="#9391A1">utsavai.internal &bull; Production-grade AI celebration planner</text>
+  <text x="1100" y="595" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="500" fill="#F59E0B" text-anchor="end">WCAG AA Compliant</text>
+</svg>

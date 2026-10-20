@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" width="240" height="56" role="img" aria-labelledby="logo-light-title logo-light-desc">
+  <title id="logo-light-title">UtsavAI Logo</title>
+  <desc id="logo-light-desc">UtsavAI brand logo with diya flame, checkmark, and tagline: Plan every celebration, smartly.</desc>
+  <defs>
+    <linearGradient id="logoFlameLight" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#7C2D12" />
+      <stop offset="35%" stop-color="#EA580C" />
+      <stop offset="70%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#FDE047" />
+    </linearGradient>
+    <linearGradient id="logoTickLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3730A3" />
+      <stop offset="100%" stop-color="#7C2D12" />
+    </linearGradient>
+    <radialGradient id="logoGlowLight" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF7ED" />
+      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0.9" />
+    </radialGradient>
+  </defs>
+
+  <!-- ── Icon Mark ── -->
+  <g transform="translate(4, 4)">
+    <!-- Diya Checkmark Base -->
+    <path d="M 8 30 C 10 37 17 42 24 42 C 30 42 36 37 44 18" 
+          fill="none" 
+          stroke="url(#logoTickLight)" 
+          stroke-width="4.2" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+          
+    <!-- Rim warm glow -->
+    <path d="M 9 30 C 14 34 21 35 26 33" 
+          fill="none" 
+          stroke="#F59E0B" 
+          stroke-width="2.2" 
+          stroke-linecap="round" />
+
+    <!-- Outer Diya Flame -->
+    <path class="brand-flame-animated" 
+          d="M 24 8 C 29 15 34 21 32 28 C 30 34 27 36 24 36 C 21 36 18 34 16 28 C 14 21 19 15 24 8 Z" 
+          fill="url(#logoFlameLight)" />
+
+    <!-- Inner Core -->
+    <path d="M 24 15 C 26 19 28 23 27 27 C 26 30 25 32 24 32 C 23 32 22 30 21 27 C 20 23 22 19 24 15 Z" 
+          fill="url(#logoGlowLight)" />
+
+    <!-- AI Sparkle -->
+    <path d="M 40 5 Q 40 10 45 10 Q 40 10 40 15 Q 40 10 35 10 Q 40 10 40 5 Z" 
+          fill="#F59E0B" />
+  </g>
+
+  <!-- ── Wordmark & Tagline ── -->
+  <text x="56" y="31" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Inter', sans-serif" 
+        font-size="27" 
+        font-weight="700" 
+        letter-spacing="-0.5" 
+        fill="#7C2D12">Utsav<tspan fill="#3730A3" font-weight="800">AI</tspan></text>
+        
+  <!-- Subtle AI Badge indicator -->
+  <circle cx="167" cy="18" r="2.5" fill="#F59E0B" />
+
+  <text x="57" y="47" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Inter', sans-serif" 
+        font-size="10.5" 
+        font-weight="500" 
+        letter-spacing="0.2" 
+        fill="#9A3412">Plan every celebration, smartly.</text>
+</svg>

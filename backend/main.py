@@ -112,6 +112,12 @@ def create_app() -> FastAPI:
     # ── Static frontend ────────────────────────────────────────
     frontend_dir = Path(__file__).parent.parent / "frontend"
     if frontend_dir.exists():
+        assets_dir = frontend_dir / "assets"
+        if assets_dir.exists():
+            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+        css_dir = frontend_dir / "css"
+        if css_dir.exists():
+            app.mount("/css", StaticFiles(directory=str(css_dir)), name="css")
         app.mount("/static", StaticFiles(directory=str(frontend_dir / "static")), name="static")
 
         @app.get("/", include_in_schema=False)
@@ -121,9 +127,12 @@ def create_app() -> FastAPI:
 
         @app.get("/{full_path:path}", include_in_schema=False)
         async def serve_spa(full_path: str):
-            """Fallback route for SPA navigation — serve index.html."""
+            """Fallback route for SPA navigation or static file serving."""
             if full_path.startswith("api/"):
                 return JSONResponse(status_code=404, content={"detail": "Not found"})
+            file_path = frontend_dir / full_path
+            if file_path.is_file():
+                return FileResponse(str(file_path))
             index_path = frontend_dir / "index.html"
             if index_path.exists():
                 return FileResponse(str(index_path))

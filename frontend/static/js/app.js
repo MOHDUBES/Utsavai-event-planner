@@ -552,6 +552,33 @@ function titleCase(str) {
   return str.replace(/\b\w/g, c => c.toUpperCase());
 }
 
+function getCategorySvgIcon(category) {
+  const cat = String(category || '').toLowerCase();
+  let iconId = 'icon-venue';
+  if (cat.includes('food') || cat.includes('cater') || cat.includes('biryani') || cat.includes('cake') || cat.includes('sweet') || cat.includes('fasting')) {
+    iconId = 'icon-food';
+  } else if (cat.includes('decor') || cat.includes('floral') || cat.includes('light') || cat.includes('balloon') || cat.includes('branding')) {
+    iconId = 'icon-decor';
+  } else if (cat.includes('photo') || cat.includes('video')) {
+    iconId = 'icon-photography';
+  } else if (cat.includes('music') || cat.includes('dj') || cat.includes('entertainment') || cat.includes('artist') || cat.includes('performer') || cat.includes('av') || cat.includes('equipment') || cat.includes('sound')) {
+    iconId = 'icon-music';
+  } else if (cat.includes('invitation') || cat.includes('stationery') || cat.includes('card') || cat.includes('promotion') || cat.includes('gift') || cat.includes('return')) {
+    iconId = 'icon-invitation';
+  } else if (cat.includes('transport') || cat.includes('vehicle') || cat.includes('logistic')) {
+    iconId = 'icon-transport';
+  } else if (cat.includes('pandit') || cat.includes('officiant') || cat.includes('puja') || cat.includes('religious') || cat.includes('ceremonial')) {
+    iconId = 'icon-priest';
+  } else if (cat.includes('makeup') || cat.includes('groom') || cat.includes('attire') || cat.includes('bridal')) {
+    iconId = 'icon-makeup';
+  } else if (cat.includes('permission') || cat.includes('noc') || cat.includes('security') || cat.includes('cleanup')) {
+    iconId = 'icon-permissions';
+  } else if (cat.includes('venue') || cat.includes('hall') || cat.includes('pandal') || cat.includes('ground') || cat.includes('lawn') || cat.includes('stage')) {
+    iconId = 'icon-venue';
+  }
+  return `<svg class="category-svg-icon" width="20" height="20" aria-hidden="true" focusable="false"><use href="/assets/icons/sprite.svg#${iconId}" /></svg>`;
+}
+
 /* ── 9a. Sanity Checks ── */
 function renderSanityChecks(checks) {
   const container = $('#sanity-alerts');
@@ -608,7 +635,7 @@ function renderBudget(budget) {
         ${budget.allocations.map(alloc => `
           <div class="budget-bar-item" role="listitem">
             <div class="bar-header">
-              <span class="bar-category">${escapeHtml(alloc.category)}</span>
+              <span class="bar-category">${getCategorySvgIcon(alloc.category)}<span>${escapeHtml(alloc.category)}</span></span>
               <span class="bar-amount">${escapeHtml(alloc.percentage.toFixed(1))}% · ${formatINRFull(alloc.amount_inr)}</span>
             </div>
             <div class="bar-track" role="progressbar"
@@ -724,7 +751,8 @@ function renderVendors(checklist) {
           >
             <div>
               <div class="vendor-title">
-                ${escapeHtml(vendor.category)}
+                ${getCategorySvgIcon(vendor.category)}
+                <span>${escapeHtml(vendor.category)}</span>
                 ${vendor.is_mandatory ? '<span class="vendor-mandatory" aria-label="Mandatory vendor">Required</span>' : ''}
               </div>
               <div class="vendor-cost">

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-food-title">
+  <title id="cat-food-title">Catering &amp; Food</title>
+  <line x1="2" y1="19" x2="22" y2="19" />
+  <path d="M 4 19 C 4 12 8 8 12 8 C 16 8 20 12 20 19" />
+  <path d="M 12 5 A 1.5 1.5 0 0 1 12 8" />
+  <path d="M 9 4 C 8.5 3 9.5 2 9 1" />
+  <path d="M 15 4 C 14.5 3 15.5 2 15 1" />
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="icon-venue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="21" x2="22" y2="21" />
+    <line x1="5" y1="21" x2="5" y2="11" />
+    <line x1="19" y1="21" x2="19" y2="11" />
+    <path d="M 9 21 V 15 C 9 13.3 10.3 12 12 12 C 13.7 12 15 13.3 15 15 V 21" />
+    <path d="M 2 11 Q 12 4 22 11" />
+    <path d="M 12 4 V 2" />
+  </symbol>
+
+  <symbol id="icon-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="19" x2="22" y2="19" />
+    <path d="M 4 19 C 4 12 8 8 12 8 C 16 8 20 12 20 19" />
+    <path d="M 12 5 A 1.5 1.5 0 0 1 12 8" />
+    <path d="M 9 4 C 8.5 3 9.5 2 9 1" />
+    <path d="M 15 4 C 14.5 3 15.5 2 15 1" />
+  </symbol>
+
+  <symbol id="icon-decor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 2 4 C 7 8 11 8 12 4 C 13 8 17 8 22 4" />
+    <path d="M 10 9 H 14 L 15 16 H 9 L 10 9 Z" />
+    <line x1="12" y1="16" x2="12" y2="20" />
+    <path d="M 5 11 Q 5 14 7 14 Q 5 14 5 17" />
+    <path d="M 19 11 Q 19 14 17 14 Q 19 14 19 17" />
+  </symbol>
+
+  <symbol id="icon-photography" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="3" />
+    <path d="M 8 7 L 10 4 H 14 L 16 7" />
+    <circle cx="12" cy="14" r="4" />
+    <circle cx="12" cy="14" r="1" fill="currentColor" />
+    <circle cx="18" cy="10" r="0.75" fill="currentColor" />
+  </symbol>
+
+  <symbol id="icon-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 9 18 V 7 L 20 4 V 15" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="17" cy="15" r="3" />
+    <path d="M 9 10 L 20 7" />
+  </symbol>
+
+  <symbol id="icon-invitation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M 3 7 L 12 13 L 21 7" />
+    <circle cx="12" cy="13" r="1.5" fill="currentColor" fill-opacity="0.3" />
+  </symbol>
+
+  <symbol id="icon-transport" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 5 12 L 7 6 H 17 L 19 12" />
+    <path d="M 3 12 H 21 V 17 H 3 Z" />
+    <circle cx="7" cy="17" r="2.5" />
+    <circle cx="17" cy="17" r="2.5" />
+    <line x1="19" y1="14" x2="21" y2="14" />
+  </symbol>
+
+  <symbol id="icon-priest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 4 19 H 20 L 17 22 H 7 L 4 19 Z" />
+    <line x1="3" y1="19" x2="21" y2="19" />
+    <path d="M 12 3 C 14 7 17 10 16 14 C 15 17 13 18 12 18 C 11 18 9 17 8 14 C 7 10 10 7 12 3 Z" />
+    <path d="M 12 8 C 13 10 14 12 13 14 C 12.5 15.5 11.5 15.5 11 14 C 10.5 12 11.5 10 12 8 Z" />
+  </symbol>
+
+  <symbol id="icon-makeup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="9" r="6" />
+    <path d="M 11 15 V 21 M 7 21 H 15" />
+    <path d="M 17 8 L 21 4" />
+    <circle cx="9" cy="7" r="1" fill="currentColor" />
+  </symbol>
+
+  <symbol id="icon-permissions" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 14 2 H 6 C 4.9 2 4 2.9 4 4 V 20 C 4 21.1 4.9 22 6 22 H 18 C 19.1 22 20 21.1 20 20 V 8 L 14 2 Z" />
+    <path d="M 14 2 V 8 H 20" />
+    <path d="M 8 15 L 11 18 L 16 13" />
+  </symbol>
+</svg>

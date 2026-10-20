@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-trans-title">
+  <title id="cat-trans-title">Transport &amp; Logistics</title>
+  <path d="M 5 12 L 7 6 H 17 L 19 12" />
+  <path d="M 3 12 H 21 V 17 H 3 Z" />
+  <circle cx="7" cy="17" r="2.5" />
+  <circle cx="17" cy="17" r="2.5" />
+  <line x1="19" y1="14" x2="21" y2="14" />
+</svg>

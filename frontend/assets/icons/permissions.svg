@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-perm-title">
+  <title id="cat-perm-title">Permissions &amp; NOC</title>
+  <path d="M 14 2 H 6 C 4.9 2 4 2.9 4 4 V 20 C 4 21.1 4.9 22 6 22 H 18 C 19.1 22 20 21.1 20 20 V 8 L 14 2 Z" />
+  <path d="M 14 2 V 8 H 20" />
+  <path d="M 8 15 L 11 18 L 16 13" />
+</svg>

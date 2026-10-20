@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-decor-title">
+  <title id="cat-decor-title">Decoration &amp; Florals</title>
+  <path d="M 2 4 C 7 8 11 8 12 4 C 13 8 17 8 22 4" />
+  <path d="M 10 9 H 14 L 15 16 H 9 L 10 9 Z" />
+  <line x1="12" y1="16" x2="12" y2="20" />
+  <path d="M 5 11 Q 5 14 7 14 Q 5 14 5 17" />
+  <path d="M 19 11 Q 19 14 17 14 Q 19 14 19 17" />
+</svg>

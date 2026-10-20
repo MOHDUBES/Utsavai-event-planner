@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-labelledby="fav-title">
+  <title id="fav-title">UtsavAI Favicon</title>
+  <defs>
+    <linearGradient id="favFlame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#EA580C" />
+      <stop offset="60%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#FDE047" />
+    </linearGradient>
+    <linearGradient id="favTick" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3730A3" />
+      <stop offset="100%" stop-color="#7C2D12" />
+    </linearGradient>
+  </defs>
+
+  <!-- Diya checkmark base (strong 3.2px stroke for 16px/32px legibility) -->
+  <path d="M 5 18 C 7 25 11 28 16 28 C 20 28 24 23 28 11" 
+        fill="none" 
+        stroke="url(#favTick)" 
+        stroke-width="3.2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+
+  <!-- Diya Flame -->
+  <path d="M 16 4 C 20 9 23 14 22 19 C 21 23 18 24 16 24 C 14 24 11 23 10 19 C 9 14 12 9 16 4 Z" 
+        fill="url(#favFlame)" />
+
+  <!-- Inner Flame Core (Cream glow) -->
+  <path d="M 16 9 C 18 12 19 15 18 18 C 17.5 20 16.5 21 16 21 C 15.5 21 14.5 20 14 18 C 13 15 14 12 16 9 Z" 
+        fill="#FFF7ED" />
+
+  <!-- AI Sparkle (Top Right) -->
+  <path d="M 26 2 Q 26 5.5 29.5 5.5 Q 26 5.5 26 9 Q 26 5.5 22.5 5.5 Q 26 5.5 26 2 Z" 
+        fill="#F59E0B" />
+</svg>

@@ -231,27 +231,58 @@ h1, h2, h3, h4, h5, h6 {
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
   text-decoration: none;
-  color: var(--color-text);
 }
 
-.logo-icon { font-size: 1.5rem; }
-
-.logo-text {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 800;
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.brand-logo {
+  height: 38px;
+  width: auto;
+  max-width: 190px;
+  object-fit: contain;
+  transition: opacity var(--transition);
 }
 
-.logo-tagline {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
+/* Default / Dark theme logo display */
+.logo-light {
   display: none;
+}
+.logo-dark {
+  display: block;
+}
+
+/* Light theme logo display */
+[data-theme="light"] .logo-light {
+  display: block;
+}
+[data-theme="light"] .logo-dark {
+  display: none;
+}
+
+/* System prefers-color-scheme light fallback */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .logo-light {
+    display: block;
+  }
+  :root:not([data-theme="dark"]) .logo-dark {
+    display: none;
+  }
+}
+
+/* Category SVG Icons */
+.category-svg-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: currentColor;
+  stroke-width: 2;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--brand-saffron, #F59E0B);
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .category-svg-icon {
+  color: var(--brand-maroon, #7C2D12);
 }
 
 @media (min-width: 640px) { .logo-tagline { display: block; } }

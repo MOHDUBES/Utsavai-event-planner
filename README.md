@@ -267,48 +267,88 @@ The timeline uses **backward planning** from the event date:
 
 ---
 
+## 🎨 Branding & Design
+
+UtsavAI features a custom, lightweight brand identity crafted entirely in hand-written SVG (zero raster dependencies, zero external CDNs, &lt; 10 KB per asset):
+
+- **Brand Motif:** An auspicious Indian **Diya Flame** (celebration) seamlessly cradled by a **Checklist Tick** (disciplined planning) and crowned with an **AI Sparkle** (intelligent recommendations).
+- **Color Palette (WCAG AA compliant):**
+  - **Saffron (`#F59E0B`):** Warm festive celebration accent
+  - **Deep Maroon (`#7C2D12`):** Trustworthy, heritage Indian grounding
+  - **Indigo (`#3730A3`):** Modern AI technology balance
+  - **Cream (`#FFF7ED`):** Clean, warm celebration canvas
+- **Vector Assets (`frontend/assets/`):**
+  - `logo.svg` / `logo-dark.svg`: Full brand wordmark with theme switching
+  - `icon.svg`: App header emblem (64x64)
+  - `favicon.svg`: Optimized 32x32 / 16x16 tab icon
+  - `apple-touch-icon.png`: 180x180 mobile icon (2.7 KB, under 20 KB limit)
+  - `og-image.svg`: 1200x630 social / Twitter card preview
+  - `icons/`: 10 bespoke category icons (venue, food, decor, photography, music, invitation, transport, priest, makeup, permissions) &amp; `sprite.svg`
+  - `manifest.webmanifest`: PWA application manifest
+- **Accessibility:** `prefers-reduced-motion` halts flame animations, all logos carry `alt="UtsavAI logo"`, and decorative icons use `aria-hidden="true"`.
+- Detailed branding guide: [docs/branding.md](docs/branding.md).
+
+---
+
 ## 📁 Project Structure
 
 ```
 utsavai-event-planner/
 ├── backend/
 │   ├── __init__.py
-│   ├── main.py                  # FastAPI app factory
+│   ├── config.py                # Configuration re-export
+│   ├── main.py                  # FastAPI app factory & security headers
 │   ├── api/
 │   │   ├── __init__.py
-│   │   └── routes.py            # All API endpoints
+│   │   └── routes.py            # REST endpoints (/plan, /chat, /demos)
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── schemas.py           # Pydantic request/response models
+│   │   └── schemas.py           # Pydantic request/response schemas
 │   ├── services/
 │   │   ├── __init__.py
-│   │   ├── budget_engine.py     # Deterministic budget calculator
-│   │   ├── timeline_engine.py   # Backward-planned timeline
-│   │   ├── vendor_engine.py     # Vendor checklist generator
-│   │   ├── sanity_checks.py     # 8 event sanity checks
-│   │   └── ai_service.py        # Provider-agnostic AI wrapper
+│   │   ├── budget_engine.py     # Deterministic budget calculator (INR)
+│   │   ├── timeline_engine.py   # Backward-planned timeline generator
+│   │   ├── vendor_engine.py     # Category vendor checklist generator
+│   │   ├── sanity_checks.py     # 8 cultural & weather validation checks
+│   │   └── ai_service.py        # Provider-agnostic AI wrapper & cache
 │   └── utils/
 │       ├── __init__.py
-│       └── config.py            # Pydantic settings from env
+│       └── config.py            # Pydantic settings from .env
 ├── frontend/
-│   ├── index.html               # Single-page app
+│   ├── index.html               # Single-page app with brand meta & switching
+│   ├── manifest.webmanifest     # Web app manifest
+│   ├── css/
+│   │   └── theme.css            # WCAG AA brand design tokens & animations
+│   ├── assets/
+│   │   ├── logo.svg             # Light theme full logo
+│   │   ├── logo-dark.svg        # Dark theme full logo
+│   │   ├── icon.svg             # Square brand emblem
+│   │   ├── favicon.svg          # 32x32 tab icon
+│   │   ├── apple-touch-icon.png # 180x180 touch icon (< 20 KB)
+│   │   ├── og-image.svg         # 1200x630 social preview card
+│   │   └── icons/               # 10 category SVGs & sprite.svg
 │   └── static/
-│       ├── css/style.css        # Design system (dark/light)
+│       ├── css/
+│       │   ├── style.css        # Main stylesheet
+│       │   └── theme.css        # Theme tokens
 │       └── js/app.js            # Vanilla JS application
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py              # Shared fixtures
+│   ├── conftest.py              # Shared fixtures & test client
 │   ├── test_budget_engine.py    # Budget calculation tests
-│   ├── test_timeline_engine.py  # Timeline tests
-│   └── test_api_and_validators.py  # API + schema + AI tests
+│   ├── test_timeline_engine.py  # Backward planning timeline tests
+│   ├── test_vendor_engine.py    # Vendor checklist engine tests
+│   └── test_api_and_validators.py # API, schema, and AI tests
 ├── docs/
-│   └── (architecture diagrams)
-├── .env.example                 # Configuration template
+│   ├── ARCHITECTURE.md          # Architecture & formula notes
+│   └── branding.md              # Brand identity guide & usage rules
+├── .env.example                 # Environment configuration template
 ├── .gitignore
 ├── LICENSE                      # MIT
 ├── Makefile
-├── pyproject.toml               # Ruff + pytest config
+├── pyproject.toml               # Pytest + coverage configuration
 ├── requirements.txt
+├── ruff.toml                    # Linter & formatter settings
 └── README.md
 ```
 

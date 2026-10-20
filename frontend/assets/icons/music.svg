@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-music-title">
+  <title id="cat-music-title">Music &amp; Entertainment</title>
+  <path d="M 9 18 V 7 L 20 4 V 15" />
+  <circle cx="6" cy="18" r="3" />
+  <circle cx="17" cy="15" r="3" />
+  <path d="M 9 10 L 20 7" />
+</svg>

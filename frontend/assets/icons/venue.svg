@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="cat-venue-title">
+  <title id="cat-venue-title">Venue</title>
+  <line x1="2" y1="21" x2="22" y2="21" />
+  <line x1="5" y1="21" x2="5" y2="11" />
+  <line x1="19" y1="21" x2="19" y2="11" />
+  <path d="M 9 21 V 15 C 9 13.3 10.3 12 12 12 C 13.7 12 15 13.3 15 15 V 21" />
+  <path d="M 2 11 Q 12 4 22 11" />
+  <path d="M 12 4 V 2" />
+</svg>
