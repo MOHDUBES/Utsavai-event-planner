@@ -7,7 +7,8 @@
     "dev": "python dev.py",
     "start": "python dev.py",
     "test": "pytest",
-    "lint": "ruff check . && ruff format --check ."
+    "lint": "ruff check . && ruff format --check .",
+    "format": "ruff format . && ruff check --fix ."
   },
   "keywords": [
     "utsavai",
