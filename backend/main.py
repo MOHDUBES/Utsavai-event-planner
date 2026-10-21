@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -27,6 +27,9 @@ from slowapi.util import get_remote_address
 from backend.api.routes import router
 from backend.utils.config import get_settings
 
+if TYPE_CHECKING:
+    from backend.utils.config import Settings
+
 # ─────────────────────────────────────────────────────────────
 # Logging
 # ─────────────────────────────────────────────────────────────
@@ -35,41 +38,21 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("backend.main")
 
 # ─────────────────────────────────────────────────────────────
-# Rate limiter
+# Rate Limiting
 # ─────────────────────────────────────────────────────────────
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["30/minute"])
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["120/minute"],
+    headers_enabled=True,
+)
 
-# ─────────────────────────────────────────────────────────────
-# App factory
-# ─────────────────────────────────────────────────────────────
 
-
-def create_app() -> FastAPI:
-    """Create and configure the FastAPI application."""
-    settings = get_settings()
-
-    app = FastAPI(
-        title="UtsavAI – Smart Celebration & Event Planner",
-        description=(
-            "An AI-powered event planning assistant for Indian weddings, birthdays, "
-            "and community celebrations. India-first: INR currency, cultural awareness, "
-            "and regional customs."
-        ),
-        version="1.0.0",
-        docs_url="/api/docs",
-        redoc_url="/api/redoc",
-        openapi_url="/api/openapi.json",
-    )
-
-    # ── Rate limiting ──────────────────────────────────────────
-    app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-    # ── CORS ──────────────────────────────────────────────────
+def _configure_middleware(app: FastAPI, settings: Settings) -> None:
+    """Configure CORS and security response headers middleware."""
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
@@ -79,7 +62,6 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "Accept"],
     )
 
-    # ── Security headers middleware ────────────────────────────
     @app.middleware("http")
     async def add_security_headers(request: Request, call_next):
         response = await call_next(request)
@@ -88,7 +70,6 @@ def create_app() -> FastAPI:
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-        # CSP: allow inline scripts for our SPA, restrict external sources
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
@@ -99,9 +80,12 @@ def create_app() -> FastAPI:
         )
         return response
 
-    # ── Global error handlers ──────────────────────────────────
+
+def _configure_error_handlers(app: FastAPI) -> None:
+    """Register safe, user-friendly exception handlers."""
+
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    async def validation_exception_handler(_request: Request, exc: RequestValidationError):
         """Return clean, user-friendly error messages for validation errors."""
         messages: list[str] = []
         clean_errors: list[dict[str, Any]] = []
@@ -130,48 +114,82 @@ def create_app() -> FastAPI:
         )
 
     @app.exception_handler(Exception)
-    async def global_exception_handler(request: Request, exc: Exception):
-        """Return safe error messages — no stack traces."""
+    async def global_exception_handler(_request: Request, exc: Exception):
+        """Return safe error messages without leaking stack traces."""
         logger.error(f"Unhandled exception: {exc}", exc_info=True)
         return JSONResponse(
             status_code=500,
             content={"detail": "An internal error occurred. Please try again later."},
         )
 
-    # ── API routes ─────────────────────────────────────────────
-    app.include_router(router)
 
-    # ── Static frontend (public/ or fallback to frontend/) ──────
-    base_dir = Path(__file__).parent.parent
+def _configure_static_files(app: FastAPI, base_dir: Path) -> None:
+    """Mount static assets and SPA fallback routes."""
     frontend_dir = base_dir / "public"
     if not frontend_dir.exists():
         frontend_dir = base_dir / "frontend"
 
-    if frontend_dir.exists():
-        assets_dir = frontend_dir / "assets"
-        if assets_dir.exists():
-            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
-        static_dir = frontend_dir / "static"
-        if static_dir.exists():
-            app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+    if not frontend_dir.exists():
+        return
 
-        @app.get("/", include_in_schema=False)
-        async def serve_frontend():
-            """Serve the main SPA index page."""
-            return FileResponse(str(frontend_dir / "index.html"))
+    assets_dir = frontend_dir / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
-        @app.get("/{full_path:path}", include_in_schema=False)
-        async def serve_spa(full_path: str):
-            """Fallback route for SPA navigation or static file serving."""
-            if full_path.startswith("api/"):
-                return JSONResponse(status_code=404, content={"detail": "Not found"})
-            file_path = frontend_dir / full_path
-            if file_path.is_file():
-                return FileResponse(str(file_path))
-            index_path = frontend_dir / "index.html"
-            if index_path.exists():
-                return FileResponse(str(index_path))
-            return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+    static_dir = frontend_dir / "static"
+    if static_dir.exists():
+        app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_frontend():
+        """Serve the main SPA index page."""
+        return FileResponse(str(frontend_dir / "index.html"))
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        """Fallback route for SPA navigation or static file serving."""
+        if full_path.startswith("api/"):
+            return JSONResponse(status_code=404, content={"detail": "Not found"})
+        file_path = frontend_dir / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        index_path = frontend_dir / "index.html"
+        if index_path.exists():
+            return FileResponse(str(index_path))
+        return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+
+
+def create_app() -> FastAPI:
+    """Create and configure the FastAPI application."""
+    settings = get_settings()
+
+    app = FastAPI(
+        title="UtsavAI – Smart Celebration & Event Planner",
+        description=(
+            "An AI-powered event planning assistant for Indian weddings, birthdays, "
+            "and community celebrations. India-first: INR currency, cultural awareness, "
+            "and regional customs."
+        ),
+        version="1.0.0",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc",
+        openapi_url="/api/openapi.json",
+    )
+
+    # Rate limiting
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    # Middleware & handlers
+    _configure_middleware(app, settings)
+    _configure_error_handlers(app)
+
+    # API routes
+    app.include_router(router)
+
+    # Static frontend & SPA routes
+    base_dir = Path(__file__).parent.parent
+    _configure_static_files(app, base_dir)
 
     logger.info(f"UtsavAI started — AI provider: {settings.ai_provider}")
     return app

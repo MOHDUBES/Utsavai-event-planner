@@ -101,7 +101,7 @@ def _check_too_close(req: EventRequest, today: date) -> SanityCheck:
             message=f"Only {days_until} days until the event — very little time to book vendors.",
             suggestion="Focus immediately on venue and caterer. Consider semi-catered options.",
         )
-    elif 14 <= days_until < 30:
+    if 14 <= days_until < 30:
         return SanityCheck(
             check_name="Booking Lead Time",
             status="warning",
@@ -146,7 +146,7 @@ def _check_monsoon_outdoor(req: EventRequest) -> SanityCheck:
             suggestion="Budget for weatherproof tent/marquee (₹20,000–₹80,000). "
             "Plan a reliable indoor backup option.",
         )
-    elif req.venue_type == VenueType.OUTDOOR:
+    if req.venue_type == VenueType.OUTDOOR:
         return SanityCheck(
             check_name="Weather Risk",
             status="ok",
@@ -203,7 +203,7 @@ def _check_budget_per_head(req: EventRequest) -> SanityCheck:
             suggestion=f"Increase total budget to at least ₹{effective_min * req.guest_count:,.0f} "
             f"or reduce guest count.",
         )
-    elif per_head < effective_min:
+    if per_head < effective_min:
         return SanityCheck(
             check_name="Budget Realism",
             status="warning",
@@ -226,7 +226,7 @@ def _check_large_guest_count(req: EventRequest) -> SanityCheck:
             message=f"{req.guest_count} guests is a very large event requiring professional event management.",
             suggestion="Hire an Event Management Company (EMC). Budget ₹50,000–₹2,00,000 for professional coordination.",
         )
-    elif req.guest_count > 500:
+    if req.guest_count > 500:
         return SanityCheck(
             check_name="Guest Count",
             status="warning",

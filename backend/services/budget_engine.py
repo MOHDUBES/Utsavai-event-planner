@@ -227,14 +227,13 @@ def _guest_scale_factor(guest_count: int) -> float:
     """Return economy-of-scale factor for catering/venue."""
     if guest_count <= 50:
         return 1.10
-    elif guest_count <= 150:
+    if guest_count <= 150:
         return 1.00
-    elif guest_count <= 500:
+    if guest_count <= 500:
         return 0.92
-    elif guest_count <= 1_000:
+    if guest_count <= 1_000:
         return 0.85
-    else:
-        return 0.78
+    return 0.78
 
 
 # ─────────────────────────────────────────────────────────────
@@ -253,10 +252,9 @@ def detect_season(event_date: date) -> Season:
     month = event_date.month
     if month in {10, 11, 12, 1, 2}:
         return Season.PEAK
-    elif month in {3, 4, 9}:
+    if month in {3, 4, 9}:
         return Season.SHOULDER
-    else:
-        return Season.OFF
+    return Season.OFF
 
 
 # ─────────────────────────────────────────────────────────────
@@ -381,9 +379,9 @@ def _apply_priority_boost(
 
 
 def _compute_min_amounts(
-    req: EventRequest,
-    city_mult: float,
-    season_mult: float,
+    _req: EventRequest,
+    _city_mult: float,
+    _season_mult: float,
     normalized_alloc: dict[str, float],
     spendable_inr: float,
 ) -> dict[str, float]:

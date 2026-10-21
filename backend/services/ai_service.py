@@ -15,6 +15,7 @@ import hashlib
 import json
 import logging
 import time
+from typing import Any
 
 from backend.models.schemas import AIPersonalization, EventRequest, EventType
 from backend.utils import config
@@ -423,6 +424,59 @@ def _get_fallback(req: EventRequest) -> AIPersonalization:
 # ─────────────────────────────────────────────────────────────
 
 
+def _sanitize_output_text(text: str) -> str:
+    """Remove HTML tags from LLM output."""
+    import re
+
+    return re.sub(r"<[^>]+>", "", str(text))
+
+
+async def _dispatch_llm_call(
+    provider: str, prompt: str, settings: config.Settings
+) -> dict[str, Any]:
+    """Dispatch prompt to configured LLM provider."""
+    if provider == "gemini":
+        return await _call_gemini(prompt, SYSTEM_PROMPT, settings)
+    if provider == "openai":
+        return await _call_openai(prompt, SYSTEM_PROMPT, settings)
+    if provider == "anthropic":
+        return await _call_anthropic(prompt, SYSTEM_PROMPT, settings)
+    raise ValueError(f"Unknown provider: {provider}")
+
+
+def _build_ai_personalization(data: dict[str, Any], provider: str) -> AIPersonalization:
+    """Validate and parse raw LLM response dict into AIPersonalization model."""
+    required_keys = {
+        "theme_ideas",
+        "menu_suggestions",
+        "decor_ideas",
+        "invitation_wording",
+        "games_activities",
+        "speech_toast",
+    }
+    if not required_keys.issubset(data.keys()):
+        raise ValueError(f"LLM response missing keys: {required_keys - data.keys()}")
+
+    return AIPersonalization(
+        theme_ideas=[_sanitize_output_text(t) for t in data["theme_ideas"][:6]],
+        menu_suggestions=[_sanitize_output_text(m) for m in data["menu_suggestions"][:6]],
+        decor_ideas=[_sanitize_output_text(d) for d in data["decor_ideas"][:6]],
+        invitation_wording=_sanitize_output_text(data["invitation_wording"]),
+        games_activities=[_sanitize_output_text(g) for g in data["games_activities"][:6]],
+        speech_toast=_sanitize_output_text(data["speech_toast"]),
+        is_ai_generated=True,
+        provider_used=provider,
+    )
+
+
+def _store_in_cache(cache_key: str, result: AIPersonalization, max_size: int) -> None:
+    """Store result in LRU cache with eviction if capacity exceeded."""
+    if len(_ai_cache) >= max_size and _ai_cache:
+        oldest_key = next(iter(_ai_cache))
+        del _ai_cache[oldest_key]
+    _ai_cache[cache_key] = result
+
+
 async def generate_personalization(req: EventRequest) -> AIPersonalization:
     """
     Generate AI personalization for an event.
@@ -439,9 +493,10 @@ async def generate_personalization(req: EventRequest) -> AIPersonalization:
         AIPersonalization (AI-generated or template fallback).
     """
     settings = config.get_settings()
+    provider = (settings.ai_provider or "").lower()
 
     # No provider configured → immediate fallback
-    if not settings.ai_provider or settings.ai_provider.lower() == "none":
+    if not provider or provider == "none":
         logger.info("AI provider is 'none'; using template fallback.")
         return _get_fallback(req)
 
@@ -450,63 +505,18 @@ async def generate_personalization(req: EventRequest) -> AIPersonalization:
     # Cache hit
     if cache_key in _ai_cache:
         logger.info(f"Cache hit for key {cache_key}")
-        cached = _ai_cache[cache_key]
-        return cached
+        return _ai_cache[cache_key]
 
     prompt = _build_user_prompt(req)
     max_retries = 2
     backoff = 1.5
+    max_cache = settings.llm_cache_size or _MAX_CACHE_SIZE
 
     for attempt in range(max_retries + 1):
         try:
-            provider = settings.ai_provider.lower()
-
-            if provider == "gemini":
-                data = await _call_gemini(prompt, SYSTEM_PROMPT, settings)
-            elif provider == "openai":
-                data = await _call_openai(prompt, SYSTEM_PROMPT, settings)
-            elif provider == "anthropic":
-                data = await _call_anthropic(prompt, SYSTEM_PROMPT, settings)
-            else:
-                logger.warning(f"Unknown provider: {provider}. Using fallback.")
-                return _get_fallback(req)
-
-            # Validate response structure
-            required_keys = {
-                "theme_ideas",
-                "menu_suggestions",
-                "decor_ideas",
-                "invitation_wording",
-                "games_activities",
-                "speech_toast",
-            }
-            if not required_keys.issubset(data.keys()):
-                raise ValueError(f"LLM response missing keys: {required_keys - data.keys()}")
-
-            # Sanitize LLM output (remove potential HTML injection)
-            def sanitize_text(text: str) -> str:
-                """Remove HTML tags from LLM output."""
-                import re
-
-                return re.sub(r"<[^>]+>", "", str(text))
-
-            result = AIPersonalization(
-                theme_ideas=[sanitize_text(t) for t in data["theme_ideas"][:6]],
-                menu_suggestions=[sanitize_text(m) for m in data["menu_suggestions"][:6]],
-                decor_ideas=[sanitize_text(d) for d in data["decor_ideas"][:6]],
-                invitation_wording=sanitize_text(data["invitation_wording"]),
-                games_activities=[sanitize_text(g) for g in data["games_activities"][:6]],
-                speech_toast=sanitize_text(data["speech_toast"]),
-                is_ai_generated=True,
-                provider_used=provider,
-            )
-
-            # Cache with size management
-            if len(_ai_cache) >= (settings.llm_cache_size or _MAX_CACHE_SIZE):
-                # Evict oldest entry
-                oldest_key = next(iter(_ai_cache))
-                del _ai_cache[oldest_key]
-            _ai_cache[cache_key] = result
+            raw_data = await _dispatch_llm_call(provider, prompt, settings)
+            result = _build_ai_personalization(raw_data, provider)
+            _store_in_cache(cache_key, result, max_cache)
 
             logger.info(f"AI personalization generated via {provider} (attempt {attempt + 1})")
             return result
@@ -519,4 +529,4 @@ async def generate_personalization(req: EventRequest) -> AIPersonalization:
                 logger.error("All AI retries exhausted. Using template fallback.")
                 return _get_fallback(req)
 
-    return _get_fallback(req)  # Should never reach here
+    return _get_fallback(req)

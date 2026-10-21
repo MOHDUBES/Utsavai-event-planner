@@ -52,6 +52,7 @@ async def create_event_plan(request: Request, event_req: EventRequest) -> EventP
     Runs deterministic engines synchronously, then async AI call.
     Returns a complete EventPlan.
     """
+    _ = request
     try:
         session_id = str(uuid.uuid4())
 
@@ -112,6 +113,7 @@ async def chat_with_assistant(request: Request, msg: ChatMessage) -> ChatRespons
     - Answers a question about the plan, or
     - Re-runs the planning engine with updated parameters.
     """
+    _ = request
     try:
         # Retrieve existing plan
         plan = _sessions.get(msg.session_id)
@@ -151,26 +153,10 @@ async def chat_with_assistant(request: Request, msg: ChatMessage) -> ChatRespons
         ) from e
 
 
-async def _process_chat_message(
-    msg: ChatMessage,
-    plan: EventPlan | None,
-) -> tuple[str, EventPlan | None]:
-    """
-    Process a chat message and return (reply, updated_plan | None).
-    """
-    message_lower = msg.message.lower()
-
-    # If no existing plan, guide user
-    if plan is None:
-        return (
-            "I don't have a plan on file for your session. "
-            "Please generate a plan first using the planning form, then come back to chat!",
-            None,
-        )
-
-    req = plan.event_request
-
-    # --- Handle "cut X cost by Y%" requests ---
+async def _match_cost_cut_intent(
+    plan: EventPlan, msg: ChatMessage, message_lower: str
+) -> tuple[str, EventPlan | None] | None:
+    """Check if message matches cost-reduction intent and handle it."""
     if any(word in message_lower for word in ["cut", "reduce", "decrease", "lower", "save"]):
         for area in ["decor", "catering", "food", "photography", "music", "venue", "transport"]:
             if area in message_lower:
@@ -179,37 +165,28 @@ async def _process_chat_message(
                 pct_match = re.search(r"(\d+)\s*%", msg.message)
                 reduction = int(pct_match.group(1)) if pct_match else 20
                 return await _handle_cost_reduction(plan, area, reduction)
+    return None
 
-    # --- Handle "reschedule" / "change date" ---
-    if any(word in message_lower for word in ["reschedule", "change date", "move to", "postpone"]):
-        return await _handle_reschedule(plan, msg.message)
 
-    # --- Handle "add more guests" / "reduce guests" / guest queries ---
-    if "guest" in message_lower:
-        return await _handle_guest_change(plan, msg.message)
-
-    # --- Handle budget questions ---
+def _format_static_inquiry_reply(plan: EventPlan, message_lower: str) -> str | None:
+    """Format static reply for budget, timeline, or vendor queries."""
     if any(word in message_lower for word in ["budget", "cost", "price", "afford", "expensive"]):
         b = plan.budget
+        allocs = "\n".join(
+            f"  - {li.category}: ₹{li.amount_inr:,.0f} ({li.percentage:.0f}%)"
+            for li in b.allocations[:3]
+        )
+        warnings_str = (
+            "\n\n⚠️ **Warnings:**\n" + "\n".join(f"- {w}" for w in b.warnings) if b.warnings else ""
+        )
         return (
             f"💰 **Your Budget Summary:**\n\n"
             f"- **Total:** ₹{b.total_inr:,.0f}\n"
             f"- **Per head:** ₹{b.per_head_inr:,.0f}\n"
             f"- **Contingency (10%):** ₹{b.contingency_inr:,.0f}\n\n"
-            f"**Top 3 allocations:**\n"
-            + "\n".join(
-                f"  - {li.category}: ₹{li.amount_inr:,.0f} ({li.percentage:.0f}%)"
-                for li in b.allocations[:3]
-            )
-            + (
-                "\n\n⚠️ **Warnings:**\n" + "\n".join(f"- {w}" for w in b.warnings)
-                if b.warnings
-                else ""
-            ),
-            None,
+            f"**Top 3 allocations:**\n{allocs}{warnings_str}"
         )
 
-    # --- Handle timeline questions ---
     if any(
         word in message_lower for word in ["timeline", "when", "schedule", "tasks", "checklist"]
     ):
@@ -218,59 +195,100 @@ async def _process_chat_message(
             f"📅 **Your Event Timeline:**\n\n"
             f"- Event Date: {plan.timeline.event_date}\n"
             f"- Days Until Event: {plan.timeline.days_until_event}\n\n"
-            f"**Critical Tasks:**\n" + "\n".join(f"  - [{t.label}] {t.task}" for t in urgent),
-            None,
+            f"**Critical Tasks:**\n" + "\n".join(f"  - [{t.label}] {t.task}" for t in urgent)
         )
 
-    # --- Handle vendor questions ---
     if any(
         word in message_lower
         for word in ["vendor", "photographer", "caterer", "decorator", "dj", "pandit"]
     ):
         items = plan.vendor_checklist.items[:3]
-        return (
-            "📋 **Key Vendors to Book:**\n\n"
-            + "\n\n".join(
-                f"**{v.category}**\n"
-                f"  - Lead time: {v.booking_lead_time_days} days\n"
-                f"  - Cost range: ₹{v.estimated_cost_min_inr:,.0f} – ₹{v.estimated_cost_max_inr:,.0f}"
-                for v in items
-            ),
-            None,
+        vendors = "\n\n".join(
+            f"**{v.category}**\n"
+            f"  - Lead time: {v.booking_lead_time_days} days\n"
+            f"  - Cost range: ₹{v.estimated_cost_min_inr:,.0f} – ₹{v.estimated_cost_max_inr:,.0f}"
+            for v in items
         )
+        return f"📋 **Key Vendors to Book:**\n\n{vendors}"
 
-    # --- Default: use AI for a conversational reply ---
+    return None
+
+
+def _call_chat_ai(plan: EventPlan, user_message: str) -> str | None:
+    """Attempt an AI call for unstructured chat messages."""
     from backend.services.ai_service import SYSTEM_PROMPT
     from backend.utils.config import get_settings
 
     settings = get_settings()
+    if not settings.ai_provider or settings.ai_provider.lower() in ("none", ""):
+        return None
 
-    if settings.ai_provider and settings.ai_provider.lower() not in ("none", ""):
-        try:
-            context_prompt = (
-                f"The user has a plan for: {req.event_type.value} on {req.event_date} "
-                f"in {req.city} for {req.guest_count} guests with budget ₹{req.total_budget_inr:,.0f}.\n\n"
-                f"The user asks: {msg.message}\n\n"
-                "Respond conversationally in 2-4 sentences. Be helpful and specific. No JSON."
+    req = plan.event_request
+    try:
+        context_prompt = (
+            f"The user has a plan for: {req.event_type.value} on {req.event_date} "
+            f"in {req.city} for {req.guest_count} guests with budget ₹{req.total_budget_inr:,.0f}.\n\n"
+            f"The user asks: {user_message}\n\n"
+            "Respond conversationally in 2-4 sentences. Be helpful and specific. No JSON."
+        )
+        if settings.ai_provider.lower() == "gemini":
+            from google import genai
+
+            client = genai.Client(api_key=settings.gemini_api_key)
+            model_name = getattr(settings, "gemini_model", "gemini-3.8-flash")
+            interaction = client.interactions.create(
+                model=model_name,
+                input=f"{SYSTEM_PROMPT}\n\n{context_prompt}",
+                store=False,
             )
-            if settings.ai_provider.lower() == "gemini":
-                from google import genai
+            return (
+                interaction.output_text or "I couldn't generate a response. Please try rephrasing."
+            )
+    except Exception as e:
+        logger.warning(f"Chat AI call failed: {e}")
+    return None
 
-                client = genai.Client(api_key=settings.gemini_api_key)
-                model_name = getattr(settings, "gemini_model", "gemini-3.8-flash")
-                interaction = client.interactions.create(
-                    model=model_name,
-                    input=f"{SYSTEM_PROMPT}\n\n{context_prompt}",
-                    store=False,
-                )
-                return (
-                    interaction.output_text
-                    or "I couldn't generate a response. Please try rephrasing.",
-                    None,
-                )
-        except Exception as e:
-            logger.warning(f"Chat AI call failed: {e}")
 
+async def _process_chat_message(
+    msg: ChatMessage,
+    plan: EventPlan | None,
+) -> tuple[str, EventPlan | None]:
+    """
+    Process a chat message and return (reply, updated_plan | None).
+    """
+    if plan is None:
+        return (
+            "I don't have a plan on file for your session. "
+            "Please generate a plan first using the planning form, then come back to chat!",
+            None,
+        )
+
+    message_lower = msg.message.lower()
+
+    # Cost reduction check
+    cost_cut_result = await _match_cost_cut_intent(plan, msg, message_lower)
+    if cost_cut_result is not None:
+        return cost_cut_result
+
+    # Reschedule check
+    if any(word in message_lower for word in ["reschedule", "change date", "move to", "postpone"]):
+        return await _handle_reschedule(plan, msg.message)
+
+    # Guest count change check
+    if "guest" in message_lower:
+        return await _handle_guest_change(plan, msg.message)
+
+    # Static inquiries (budget, timeline, vendors)
+    inquiry_reply = _format_static_inquiry_reply(plan, message_lower)
+    if inquiry_reply is not None:
+        return inquiry_reply, None
+
+    # AI conversational response
+    ai_reply = _call_chat_ai(plan, msg.message)
+    if ai_reply:
+        return ai_reply, None
+
+    req = plan.event_request
     return (
         f"I understand you're asking about your {req.event_type.value} event. "
         f"Could you be more specific? I can help with budget, timeline, vendors, or personalization. "

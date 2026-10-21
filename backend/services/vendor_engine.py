@@ -31,7 +31,7 @@ VENDOR_CITY_MULT: dict[str, float] = {
 # ─────────────────────────────────────────────────────────────
 
 
-def _venue_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _venue_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Venue",
         vendor_type="Banquet Hall / Hotel / Farmhouse / Lawn",
@@ -83,7 +83,7 @@ def _caterer_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _decorator_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _decorator_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Decoration",
         vendor_type="Event Decorator / Florist",
@@ -104,7 +104,7 @@ def _decorator_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _photographer_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _photographer_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Photography & Videography",
         vendor_type="Photographer / Videographer",
@@ -126,7 +126,7 @@ def _photographer_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _music_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _music_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Music & Entertainment",
         vendor_type="DJ / Live Band / Musician / Performer",
@@ -147,7 +147,7 @@ def _music_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _pandit_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _pandit_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Pandit / Officiant / Religious Authority",
         vendor_type="Pandit / Maulvi / Priest / Granthi",
@@ -167,7 +167,7 @@ def _pandit_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _makeup_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _makeup_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Makeup & Grooming",
         vendor_type="Bridal Makeup Artist / Grooming Artist",
@@ -188,7 +188,7 @@ def _makeup_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _invitations_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _invitations_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Invitations & Stationery",
         vendor_type="Printing Press / Digital Designer",
@@ -208,7 +208,7 @@ def _invitations_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _transport_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _transport_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Transport & Logistics",
         vendor_type="Travel Agent / Bus Rental / Car Service",
@@ -247,7 +247,7 @@ def _permissions_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _cake_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _cake_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="Cake & Sweets",
         vendor_type="Bakery / Mithai Shop",
@@ -266,7 +266,7 @@ def _cake_vendor(req: EventRequest, mult: float) -> VendorItem:
     )
 
 
-def _av_vendor(req: EventRequest, mult: float) -> VendorItem:
+def _av_vendor(_req: EventRequest, mult: float) -> VendorItem:
     return VendorItem(
         category="AV & Stage Equipment",
         vendor_type="AV Rental Company / Stage Contractor",
