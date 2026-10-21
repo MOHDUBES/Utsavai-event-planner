@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════════════
+   UtsavAI – Design System & Mobile-First Stylesheet
+   WCAG AA compliant, touch-friendly (44x44px), safe-area insets
+   Mobile-First: Base (320px+) -> 600px -> 900px -> 1200px
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 1. Design Tokens ─────────────────────────────────────── */
+:root {
+  /* Color palette – dark theme (default) */
+  --color-bg: #0a0a14;
+  --color-bg-2: #12121f;
+  --color-bg-3: #1a1a2e;
+  --color-surface: #1e1e35;
+  --color-surface-2: #252540;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-focus: #f59e0b;
+
+  /* Brand gradients */
+  --gradient-primary: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #818cf8 100%);
+  --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gradient-text: linear-gradient(135deg, #f59e0b, #ea580c 60%, #818cf8);
+  --gradient-card: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(234,88,12,0.05));
+
+  /* Text colors */
+  --color-text: #f1f0ef;
+  --color-text-muted: #9391a1;
+  --color-text-subtle: #6b6880;
+
+  /* Accent colors */
+  --color-primary: #f59e0b;
+  --color-primary-hover: #fbbf24;
+  --color-secondary: #7c2d12;
+  --color-accent: #818cf8;
+
+  /* Semantic feedback */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Typography – 100% lightweight native system font stack */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Fluid typography */
+  --text-xs: clamp(0.75rem, 1.8vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 2vw, 0.9375rem);
+  --text-base: 1rem;
+  --text-md: clamp(1.0625rem, 2.5vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 3vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 3.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 4.5vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 5.5vw, 2.5rem);
+  --text-4xl: clamp(2.25rem, 7vw, 3.25rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.6);
+  --shadow-glow: 0 0 30px rgba(245,158,11,0.2);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Layout */
+  --container-max: 1200px;
+}
+
+/* Light theme overrides */
+[data-theme="light"] {
+  --color-bg: #fff7ed;
+  --color-bg-2: #ffedd5;
+  --color-bg-3: #fed7aa;
+  --color-surface: #ffffff;
+  --color-surface-2: #fff1e6;
+  --color-border: rgba(124, 45, 18, 0.15);
+  --color-border-focus: #d97706;
+  --color-text: #451a03;
+  --color-text-muted: #7c2d12;
+  --color-text-subtle: #9a3412;
+  --color-primary: #d97706;
+  --color-primary-hover: #b45309;
+  --color-accent: #3730a3;
+  --shadow-sm: 0 1px 3px rgba(124,45,18,0.1);
+  --shadow: 0 4px 20px rgba(124,45,18,0.12);
+  --shadow-lg: 0 10px 40px rgba(124,45,18,0.15);
+  --shadow-glow: 0 0 30px rgba(217,119,6,0.15);
+}
+
+/* ── 5. Responsive Container & Safe Areas ─────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+
+/* ── 6. Typography ───────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.gradient-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 20. Animations ──────────────────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(4deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.8; } }
+@keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
