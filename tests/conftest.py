@@ -4,11 +4,13 @@ Shared fixtures for UtsavAI test suite.
 
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from backend.config import get_settings
 from backend.main import app
 from backend.models.schemas import (
     CityTier,
@@ -18,6 +20,27 @@ from backend.models.schemas import (
     PriorityArea,
     VenueType,
 )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Guarantee deterministic test environment without outbound network dependencies."""
+    os.environ["AI_PROVIDER"] = "none"
+    os.environ["GEMINI_API_KEY"] = ""
+    os.environ["OPENAI_API_KEY"] = ""
+    os.environ["ANTHROPIC_API_KEY"] = ""
+    get_settings.cache_clear()
+
+
+@pytest.fixture(autouse=True)
+def _mock_ai_sleep(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Mock time.sleep in ai_service and enforce offline AI provider for determinism."""
+    monkeypatch.setenv("AI_PROVIDER", "none")
+    monkeypatch.setenv("GEMINI_API_KEY", "")
+    monkeypatch.setenv("OPENAI_API_KEY", "")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "")
+    monkeypatch.setattr("backend.services.ai_service.time.sleep", lambda *args, **kwargs: None)
+    get_settings.cache_clear()
+
 
 # ─────────────────────────────────────────────────────────────
 # Date fixtures

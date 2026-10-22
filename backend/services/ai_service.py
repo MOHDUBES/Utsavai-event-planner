@@ -360,7 +360,8 @@ async def _call_anthropic(prompt: str, system: str, settings: Any) -> dict:
             system=system,
             messages=[{"role": "user", "content": prompt}],
         )
-        text = message.content[0].text if message.content else "{}"
+        first_block = message.content[0] if message.content else None
+        text = getattr(first_block, "text", "{}") or "{}"
         return json.loads(text)
     except Exception as e:
         logger.warning(f"Anthropic call failed: {e}")
