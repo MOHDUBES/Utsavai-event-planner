@@ -5,7 +5,9 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests: 143 Passed](https://img.shields.io/badge/tests-143%20passed%20(91%25%20cov)-brightgreen)](tests/)
+[![Tests: 159 Passed](https://img.shields.io/badge/tests-159%20passed%20(92%25%20cov)-brightgreen)](tests/)
+[![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Type Checked: Mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy.readthedocs.io/)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Live-success?logo=vercel)](https://utsavai-event-planner.vercel.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-MOHDUBES%2FUtsavai--event--planner-181717?logo=github)](https://github.com/MOHDUBES/Utsavai-event-planner)
 
@@ -391,25 +393,30 @@ utsavai-event-planner/
 │   └── index.py                 # Vercel serverless ASGI entrypoint (FastAPI)
 ├── backend/
 │   ├── __init__.py
-│   ├── config.py                # Top-level configuration facade (re-exports Settings)
+│   ├── config.py                # Canonical BaseSettings configuration facade
+│   ├── constants.py             # Centralized multipliers, benchmarks, calendar rules
+│   ├── exceptions.py            # Custom domain exception hierarchy
 │   ├── main.py                  # FastAPI app factory, CORS, static mounts & security headers
 │   ├── api/
 │   │   ├── __init__.py
-│   │   └── routes.py            # REST endpoints (/plan, /chat, /demos, /health)
+│   │   └── routes.py            # HTTP REST endpoints (/plan, /chat, /demos, /health)
+│   ├── data/
+│   │   ├── __init__.py
+│   │   └── demos.py             # Curated demo scenarios
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── schemas.py           # Pydantic request/response schemas & string sanitizers
+│   │   └── schemas.py           # Pydantic v2 domain schemas & input sanitizers
 │   ├── services/
 │   │   ├── __init__.py
+│   │   ├── ai_service.py        # Multi-provider LLM adapter, cache & offline fallback
 │   │   ├── budget_engine.py     # Deterministic budget calculator (INR)
-│   │   ├── timeline_engine.py   # Backward-planned timeline generator
-│   │   ├── vendor_engine.py     # Category vendor checklist generator
+│   │   ├── chat_service.py      # Conversational assistant intent parsers & plan updater
 │   │   ├── sanity_checks.py     # 8 cultural & weather validation checks
-│   │   └── ai_service.py        # Multi-provider AI wrapper, cache & template fallback
+│   │   ├── timeline_engine.py   # Backward-planned timeline generator
+│   │   └── vendor_engine.py     # Category vendor checklist generator
 │   └── utils/
 │       ├── __init__.py
-│       └── config.py            # Pydantic settings model loaded from .env
-│                                # (backend/config.py exposes this as a clean facade)
+│       └── config.py            # Backward-compatibility alias to backend.config
 ├── public/
 │   ├── index.html               # Single-page app with brand meta & bilingual i18n
 │   ├── manifest.webmanifest     # Web app manifest
@@ -425,35 +432,79 @@ utsavai-event-planner/
 │   │   └── icons/               # 10 category SVGs & sprite.svg
 │   └── static/
 │       ├── css/
-│       │   ├── style.css        # Mobile-first stylesheet (320px–430px base + min-width queries)
-│       │   └── theme.css        # WCAG AA brand design tokens & animations
-│       └── js/app.js            # Vanilla JS application
+│       │   ├── a11y.css         # High contrast focus-visible rings & screen reader styles
+│       │   ├── base.css         # Reset, typography, and foundational CSS variables
+│       │   ├── components.css   # Cards, tabs, badges, forms, and dialog styling
+│       │   ├── layout.css       # Responsive grid, wizard steps, and containers
+│       │   ├── responsive.css   # Viewport breakpoints (600px, 900px, 1200px)
+│       │   ├── style.css        # Root entrypoint stylesheet
+│       │   └── theme.css        # WCAG AA brand design tokens & dark/light palettes
+│       └── js/
+│           ├── api.js           # Async HTTP client wrapper for /api/v1/*
+│           ├── app.js           # Backward-compatible ES module entrypoint
+│           ├── chat.js          # Interactive chat assistant panel controller
+│           ├── constants.js     # Default form values, sample data & endpoints
+│           ├── dom.js           # Safe HTML escape, selectors & notification toasts
+│           ├── export.js        # Markdown, JSON, and print export generation
+│           ├── i18n.js          # English / Hindi translation dictionaries
+│           ├── main.js          # Main orchestrator initializing wizard, tabs & events
+│           ├── state.js         # Reactive central application state store
+│           ├── theme.js         # Dark/light mode theme toggle & localStorage sync
+│           └── render/
+│               ├── budget.js    # Budget table, summary cards & SVG donut chart
+│               ├── ideas.js     # AI personalized theme, menu & decor cards
+│               ├── timeline.js  # Backward-planned milestone checklist
+│               └── vendors.js   # Vendor categories, lead-times & questionnaires
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py              # Shared fixtures & test client
 │   ├── test_ai_service.py       # Mocked AI provider tests & fallback validation
 │   ├── test_api_and_validators.py # API, schema, security, and sanity tests
 │   ├── test_budget_engine.py    # Deterministic budget calculation tests
-│   ├── test_chat_assistant.py   # Chat assistant engine re-run tests
+│   ├── test_chat_assistant.py   # Chat assistant engine re-run integration tests
+│   ├── test_chat_service.py     # Pure unit tests for intent parsing & constants
 │   ├── test_demo_scenarios.py   # Verification of all 3 demo scenarios
 │   ├── test_frontend_static.py  # Viewport meta, asset integrity & PWA tests
 │   ├── test_timeline_engine.py  # Backward planning timeline tests
 │   └── test_vendor_engine.py    # Vendor checklist engine tests
 ├── docs/
-│   ├── architecture.md          # In-depth system architecture & formulas
+│   ├── architecture.md          # In-depth system architecture, module layout & formulas
 │   └── branding.md              # Brand identity guide & usage rules
+├── .editorconfig                # Multi-language editor consistency
 ├── .env.example                 # Environment configuration template
-├── .gitignore
-├── .python-version              # Python 3.12 pinned for Vercel
-├── .vercelignore                # Excludes tests/docs from serverless bundle
-├── LICENSE                      # MIT (MOHD UBES)
-├── Makefile
+├── .gitignore                   # Excludes caches, venv, and large files
+├── .prettierrc                  # Frontend formatting guidelines
+├── eslint.config.js             # Frontend lint configuration
+├── mypy.ini                     # Static type checking rules
+├── CONTRIBUTING.md              # Contributor onboarding & quality standards
+├── Makefile                     # Developer targets (lint, format, typecheck, test, check)
 ├── pyproject.toml               # Pytest + coverage configuration
 ├── requirements.txt             # Minimal production runtime dependencies
-├── requirements-dev.txt         # Development & test dependencies (pytest, ruff)
-├── ruff.toml                    # Linter & formatter settings
+├── requirements-dev.txt         # Development & test dependencies (pytest, ruff, mypy)
+├── ruff.toml                    # Strict Ruff linter & formatter rules (E, F, I, B, UP, SIM, C90, N, D, ANN, PL)
 ├── vercel.json                  # Vercel routing & security headers config
 └── README.md
+```
+
+---
+
+## 🛠️ Developer Tooling & Verification
+
+UtsavAI enforces modern code quality, formatting, and strict typing:
+
+```bash
+# Run all checks (linter, typechecker, full test suite)
+make check
+
+# Lint and auto-format
+make lint
+make format
+
+# Static type checking
+make typecheck
+
+# Run test suite with coverage
+make test
 ```
 
 ---
@@ -530,7 +581,7 @@ utsavai-event-planner/
 - [x] **Single branch** (`main` only)
 - [x] **Repo size < 10MB** (no node_modules, no large media, .gitignore included)
 - [x] **README complete** (architecture, setup, features, testing, security, assumptions)
-- [x] **Tests passing** (128 tests covering all engines, AI mocking, chat re-runs, Vercel entrypoint, and demo scenarios)
+- [x] **Tests passing** (159 tests covering all engines, AI mocking, chat re-runs, pure intent parsers, Vercel entrypoint, and demo scenarios with 92% coverage)
 - [x] **Works without API key** (template fallback mode)
 - [x] **3 demo scenarios** (Wedding, Birthday, Diwali Mela)
 - [x] **Budget engine** (deterministic, city/season/priority aware)
