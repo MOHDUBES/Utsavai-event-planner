@@ -1,22 +1,60 @@
 # Ruff configuration for UtsavAI
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 
 [lint]
 select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "C4",  # flake8-comprehensions
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "SIM", # flake8-simplify
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "C90",  # mccabe complexity
+    "N",    # pep8-naming
+    "D",    # pydocstyle
+    "ANN",  # flake8-annotations
+    "PL",   # pylint
 ]
 ignore = [
-    "E501", # line too long (handled by formatter)
-    "B008", # do not perform function calls in argument defaults (FastAPI Depends)
+    "E501",   # line too long (handled by formatter)
+    "B008",   # function calls in argument defaults (FastAPI Depends)
+    "ANN204", # missing return type for special method __init__
+    "ANN002", # *args annotation
+    "ANN003", # **kwargs annotation
+    "ANN401", # typing.Any disallowed
+    "D105",   # missing docstring in magic method
+    "D107",   # missing docstring in __init__
+    "D200",   # one-line docstring should fit on one line
+    "D205",   # 1 blank line required between summary line and description
+    "D212",   # multi-line docstring summary should start at first line (conflicts with D213)
+    "D400",   # first line should end with a period
+    "D415",   # first line should end with period, question mark, or exclamation point
+    "N818",   # exception name should be named with an Error suffix
+    "UP042",  # replace str, Enum with StrEnum (keep str, Enum for max compatibility)
+    "PLR0911",# too many return statements
+    "PLR0912",# too many branches
+    "PLR0913",# too many arguments
+    "PLR0915",# too many statements
+    "PLR2004",# magic value used in comparison
+    "PLC0415",# import should be at top-level (needed for lazy loading / avoiding circular imports)
 ]
+
+[lint.per-file-ignores]
+"tests/**/*" = [
+    "D",       # docstrings in test functions
+    "ANN",     # annotations in tests
+    "PLR2004", # magic comparison in test assertions
+    "PLR0913", # test fixture parameters
+    "PLR0917", # too many positional arguments in test fixtures
+    "PLC0415", # imports inside test fixtures
+]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.mccabe]
+max-complexity = 10
 
 [lint.isort]
 known-first-party = ["backend"]

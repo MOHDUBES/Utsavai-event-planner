@@ -284,9 +284,8 @@ def call_chat_ai(plan: EventPlan, user_message: str) -> str | None:
                 input=f"{SYSTEM_PROMPT}\n\n{context_prompt}",
                 store=False,
             )
-            return (
-                interaction.output_text or "I couldn't generate a response. Please try rephrasing."
-            )
+            output = getattr(interaction, "output_text", "")
+            return output or "I couldn't generate a response. Please try rephrasing."
     except Exception as e:
         logger.warning(f"Chat AI call failed: {e}")
     return None

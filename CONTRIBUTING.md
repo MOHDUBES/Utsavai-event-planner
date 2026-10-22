@@ -1,45 +1,35 @@
 # Contributing to UtsavAI
 
-Thank you for your interest in contributing to UtsavAI! We welcome all contributions, bug reports, and suggestions.
+Thank you for contributing to UtsavAI! We welcome improvements, bug reports, and optimizations.
 
-## Development Setup
+## Development Workflow
 
-1. **Clone the repository:**
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/MOHDUBES/Utsavai-event-planner.git
-   cd Utsavai-event-planner
+   git clone https://github.com/mohdubes/utsavai-event-planner.git
+   cd utsavai-event-planner
    ```
 
-2. **Create a virtual environment:**
+2. **Set up virtual environment**:
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   pip install mypy
    ```
 
-3. **Install dependencies:**
+3. **Run development server**:
    ```bash
-   pip install -r requirements-dev.txt
+   python dev.py
    ```
 
 ## Code Quality Standards
 
-We enforce strict code quality guidelines:
+We enforce strict linting, formatting, and typing standards:
+- **Linting**: `python -m ruff check .`
+- **Formatting**: `python -m ruff format --check .`
+- **Type Checking**: `python -m mypy backend`
+- **Testing**: `python -m pytest`
+- **Full Check**: `make check` (or run lint, mypy, and pytest)
 
-- **Formatting & Linting:** Code must pass `ruff check .` and `ruff format --check .`.
-- **Testing:** All new features or bug fixes must include unit or integration tests in `tests/`.
-- **Coverage:** Minimum test coverage is 90% (`pytest --cov=backend`).
-- **Modularity:** Keep cyclomatic complexity low (C901 <= 10). Split large functions into single-responsibility helpers.
-- **Type Annotations:** All backend code must have full type annotations.
-
-## Running Tests & Checks
-
-```bash
-# Run all tests
-pytest
-
-# Run linter
-ruff check .
-
-# Check code formatting
-ruff format --check .
-```
+All pull requests must pass automated CI checks without regressions. Maintain test coverage at or above 85%.

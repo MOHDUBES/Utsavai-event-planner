@@ -58,7 +58,7 @@ FALLBACK_THEMES: dict[str, list[str]] = {
     ],
 }
 
-FALLBACK_MENUS: dict[str, dict[str, list[str]]] = {
+FALLBACK_MENUS: dict[str, list[str]] = {
     "wedding_veg": [
         "Welcome drinks: Aam Panna, Shikanji, Coconut Water",
         "Starters: Dahi Puri, Paneer Tikka, Aloo Tikki Chaat",
@@ -298,7 +298,7 @@ Ensure all suggestions are:
 # ─────────────────────────────────────────────────────────────
 
 
-async def _call_gemini(prompt: str, system: str, settings: object) -> dict:
+async def _call_gemini(prompt: str, system: str, settings: Any) -> dict:
     """Call Google Gemini API using google-genai SDK."""
     try:
         from google import genai  # type: ignore[import]
@@ -313,7 +313,7 @@ async def _call_gemini(prompt: str, system: str, settings: object) -> dict:
             store=False,  # No need to retain
         )
 
-        raw = interaction.output_text or ""
+        raw = getattr(interaction, "output_text", "") or ""
         # Strip any accidental markdown fences
         raw = raw.strip()
         if raw.startswith("```"):
@@ -327,7 +327,7 @@ async def _call_gemini(prompt: str, system: str, settings: object) -> dict:
         raise
 
 
-async def _call_openai(prompt: str, system: str, settings: object) -> dict:
+async def _call_openai(prompt: str, system: str, settings: Any) -> dict:
     """Call OpenAI API."""
     try:
         import openai  # type: ignore[import]
@@ -348,7 +348,7 @@ async def _call_openai(prompt: str, system: str, settings: object) -> dict:
         raise
 
 
-async def _call_anthropic(prompt: str, system: str, settings: object) -> dict:
+async def _call_anthropic(prompt: str, system: str, settings: Any) -> dict:
     """Call Anthropic Claude API."""
     try:
         import anthropic  # type: ignore[import]

@@ -209,12 +209,53 @@ sequenceDiagram
 
 ---
 
+---
+
 ## 6. Accessibility & Frontend Engineering
 
-- **No Framework / Zero Build Tools:** Pure vanilla ES6+ JavaScript, semantic HTML5, and bespoke CSS tokens. Total repository weight remains ~400 KB (well under the 10 MB constraint).
+- **Native ES Modules Architecture (Zero Build Step):**
+  - Loaded via `<script type="module" src="/static/js/main.js"></script>` without bundlers or node_modules dependencies.
+  - Granular, single-responsibility files under `public/static/js/`:
+    - `constants.js`: Domain constants, defaults, and API endpoints.
+    - `state.js`: Central reactive state store with listeners.
+    - `dom.js`: DOM querying, safe HTML escaping, formatting helpers.
+    - `i18n.js`: English / Hindi translation dictionaries separate from logic.
+    - `theme.js`: Dark/light mode theme management.
+    - `api.js`: Async client communicating with `/api/v1/*` endpoints.
+    - `chat.js`: Interactive conversational assistant panel logic.
+    - `export.js`: Markdown and JSON exporter + print generation.
+    - `render/`: Specialized rendering modules (`budget.js`, `timeline.js`, `vendors.js`, `ideas.js`).
+    - `main.js`: Main entrypoint coordinating wizard steps, tabs, and event bindings.
+  - Modular CSS in `public/static/css/`: `base.css`, `layout.css`, `components.css`, `responsive.css`, and `a11y.css`, imported into root `style.css`.
 - **Dual Live Regions:**
   - `#aria-live`: `aria-live="polite"` for non-disruptive announcements (tab navigation, theme toggle).
   - `#aria-assertive`: `aria-live="assertive"` for critical form errors and sanity alerts.
 - **Visible Focus:** Global `:focus-visible` ring using high-contrast Saffron (`#F59E0B` on dark, `#D97706` on light) with 3px offset.
 - **Reduced Motion:** Comprehensive `@media (prefers-reduced-motion: reduce)` overrides to neutralize animations.
 - **Bilingual i18n:** Dynamic client-side dictionary toggle switching all UI headings, form labels, and button prompts between English and Hindi.
+
+---
+
+## 7. Modular Backend Layout
+
+```
+backend/
+├── api/
+│   └── routes.py             # HTTP route definitions, status codes, serialization
+├── constants.py              # Centralized domain constants, multipliers, calendar rules
+├── exceptions.py             # Custom domain exception hierarchy
+├── config.py                 # Pydantic BaseSettings and cached configuration
+├── data/
+│   └── demos.py              # Curated demo event scenarios
+├── models/
+│   └── schemas.py            # Pydantic v2 domain schemas and validators
+├── services/
+│   ├── ai_service.py         # Multi-provider LLM orchestration, caching, template fallbacks
+│   ├── budget_engine.py      # Deterministic mathematical budget allocation
+│   ├── chat_service.py       # Pure intent parsing and dynamic plan update engine
+│   ├── sanity_checks.py      # Cultural calendar, monsoon, and budget sanity engine
+│   ├── timeline_engine.py    # Backward-planned milestone generation & compression
+│   └── vendor_engine.py      # Vendor requirements matrix, lead times, and questionnaires
+└── utils/
+    └── config.py             # Backward-compatibility alias to backend.config
+```

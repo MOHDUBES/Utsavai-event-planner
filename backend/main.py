@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Any
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -63,8 +63,8 @@ def _configure_middleware(app: FastAPI, settings: Settings) -> None:
     )
 
     @app.middleware("http")
-    async def add_security_headers(request: Request, call_next):
-        response = await call_next(request)
+    async def add_security_headers(request: Request, call_next: Any) -> Response:
+        response: Response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
@@ -85,7 +85,9 @@ def _configure_error_handlers(app: FastAPI) -> None:
     """Register safe, user-friendly exception handlers."""
 
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(_request: Request, exc: RequestValidationError):
+    async def validation_exception_handler(
+        _request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
         """Return clean, user-friendly error messages for validation errors."""
         messages: list[str] = []
         clean_errors: list[dict[str, Any]] = []
@@ -114,7 +116,7 @@ def _configure_error_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(Exception)
-    async def global_exception_handler(_request: Request, exc: Exception):
+    async def global_exception_handler(_request: Request, exc: Exception) -> JSONResponse:
         """Return safe error messages without leaking stack traces."""
         logger.error(f"Unhandled exception: {exc}", exc_info=True)
         return JSONResponse(
@@ -138,11 +140,11 @@ def _register_spa_routes(app: FastAPI, frontend_dir: Path) -> None:
     """Register root and fallback SPA navigation routes."""
 
     @app.get("/", include_in_schema=False)
-    async def serve_frontend():
+    async def serve_frontend() -> FileResponse:
         return FileResponse(str(frontend_dir / "index.html"))
 
     @app.get("/{full_path:path}", include_in_schema=False)
-    async def serve_spa(full_path: str):
+    async def serve_spa(full_path: str) -> Response:
         if full_path.startswith("api/"):
             return JSONResponse(status_code=404, content={"detail": "Not found"})
         file_path = frontend_dir / full_path
@@ -185,7 +187,7 @@ def create_app() -> FastAPI:
 
     # Rate limiting
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
 
     # Middleware & handlers
     _configure_middleware(app, settings)

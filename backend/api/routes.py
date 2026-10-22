@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
@@ -82,7 +82,7 @@ async def create_event_plan(request: Request, event_req: EventRequest) -> EventP
 
         plan = EventPlan(
             session_id=session_id,
-            generated_at=datetime.now(timezone.utc).isoformat(),
+            generated_at=datetime.now(UTC).isoformat(),
             event_request=event_req,
             budget=budget,
             timeline=timeline,
@@ -159,7 +159,7 @@ async def health_check() -> dict[str, Any]:
             and settings.ai_provider.lower() not in ("none", "")
             and (settings.gemini_api_key or settings.openai_api_key or settings.anthropic_api_key)
         ),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
     }
 
 

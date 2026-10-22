@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-format:
-    name: Lint & Format Check
+  lint-and-typecheck:
+    name: Lint, Format & Typecheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,13 +23,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff
+          pip install -r requirements-dev.txt
 
       - name: Check formatting with Ruff
         run: ruff format --check .
 
       - name: Lint with Ruff
         run: ruff check .
+
+      - name: Typecheck with Mypy
+        run: mypy backend
 
   test-and-coverage:
     name: Unit & Integration Tests

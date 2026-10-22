@@ -85,6 +85,7 @@ def print_banner(port: int, network_ip: str | None, port_shifted: bool = False) 
 
 
 def main() -> None:
+    """Launch UtsavAI development server on preferred or available port."""
     preferred_port = int(os.getenv("PORT", "8000"))
     port = select_port(preferred_port)
     port_shifted = port != preferred_port
@@ -106,7 +107,7 @@ def main() -> None:
     ]
 
     try:
-        subprocess.run(cmd)
+        subprocess.run(cmd, check=False)
     except KeyboardInterrupt:
         print("\nServer stopped.")
 
