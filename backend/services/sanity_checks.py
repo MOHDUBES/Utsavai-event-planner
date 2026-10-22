@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from datetime import date
 
+from backend.constants import FESTIVAL_CLUSTERS
 from backend.models.schemas import (
     EventRequest,
     SanityCheck,
@@ -20,31 +21,6 @@ from backend.models.schemas import (
     VenueType,
 )
 from backend.services.budget_engine import detect_season
-
-# ─────────────────────────────────────────────────────────────
-# Indian festival/holiday dates (approximate, non-exhaustive)
-# These are major festival clusters that may affect vendor availability.
-# ─────────────────────────────────────────────────────────────
-
-# (month, day_start, day_end, festival_name)
-FESTIVAL_CLUSTERS: list[tuple[int, int, int, str]] = [
-    (10, 2, 6, "Navratri / Durga Puja"),
-    (10, 12, 15, "Dussehra"),
-    (10, 29, 31, "Diwali"),
-    (11, 1, 3, "Diwali / Bhai Dooj"),
-    (11, 24, 30, "Guru Nanak Jayanti weekend"),
-    (12, 24, 26, "Christmas weekend"),
-    (12, 31, 31, "New Year's Eve"),
-    (1, 1, 1, "New Year's Day"),
-    (1, 13, 15, "Makar Sankranti / Lohri / Pongal"),
-    (1, 26, 26, "Republic Day"),
-    (2, 14, 14, "Valentine's Day (high demand for venues)"),
-    (3, 25, 29, "Holi / Spring festival"),
-    (4, 9, 14, "Ram Navami / Baisakhi / Eid season"),
-    (8, 15, 15, "Independence Day"),
-    (8, 19, 26, "Janmashtami / Ganesh Chaturthi prep"),
-    (9, 1, 15, "Ganesh Chaturthi season"),
-]
 
 
 def run_sanity_checks(req: EventRequest, today: date | None = None) -> list[SanityCheck]:

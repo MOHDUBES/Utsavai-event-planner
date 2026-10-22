@@ -290,6 +290,39 @@ def _av_vendor(_req: EventRequest, mult: float) -> VendorItem:
 # ─────────────────────────────────────────────────────────────
 
 
+def _get_event_specific_vendors(req: EventRequest, mult: float) -> list[VendorItem]:
+    """Return supplemental vendors based on specific event categories."""
+    vendors: list[VendorItem] = []
+    if req.event_type in {EventType.WEDDING, EventType.ANNIVERSARY}:
+        vendors.extend(
+            [
+                _pandit_vendor(req, mult),
+                _makeup_vendor(req, mult),
+                _music_vendor(req, mult),
+                _transport_vendor(req, mult),
+            ]
+        )
+    elif req.event_type in {EventType.BIRTHDAY, EventType.BABY_SHOWER}:
+        vendors.extend([_music_vendor(req, mult), _cake_vendor(req, mult)])
+    elif req.event_type in {
+        EventType.DIWALI_MELA,
+        EventType.NAVRATRI,
+        EventType.RWA_EVENT,
+        EventType.EID_CELEBRATION,
+    }:
+        vendors.extend([_pandit_vendor(req, mult), _music_vendor(req, mult), _av_vendor(req, mult)])
+        if req.guest_count > 200:
+            vendors.append(_permissions_vendor(req, mult))
+    elif req.event_type == EventType.COLLEGE_FEST:
+        vendors.extend(
+            [_music_vendor(req, mult), _av_vendor(req, mult), _permissions_vendor(req, mult)]
+        )
+    elif req.event_type == EventType.CORPORATE:
+        vendors.extend([_av_vendor(req, mult), _transport_vendor(req, mult)])
+
+    return vendors
+
+
 def generate_vendor_checklist(req: EventRequest) -> VendorChecklist:
     """
     Build a vendor checklist tailored to the event type, city, and requirements.
@@ -301,46 +334,14 @@ def generate_vendor_checklist(req: EventRequest) -> VendorChecklist:
         VendorChecklist with all relevant vendor categories.
     """
     mult = VENDOR_CITY_MULT[req.city_tier]
-    items: list[VendorItem] = []
-
-    # Universal vendors
-    items.append(_venue_vendor(req, mult))
-    items.append(_caterer_vendor(req, mult))
-    items.append(_decorator_vendor(req, mult))
-    items.append(_photographer_vendor(req, mult))
-    items.append(_invitations_vendor(req, mult))
-
-    # Event-type specific vendors
-    if req.event_type in {EventType.WEDDING, EventType.ANNIVERSARY}:
-        items.append(_pandit_vendor(req, mult))
-        items.append(_makeup_vendor(req, mult))
-        items.append(_music_vendor(req, mult))
-        items.append(_transport_vendor(req, mult))
-
-    elif req.event_type in {EventType.BIRTHDAY, EventType.BABY_SHOWER}:
-        items.append(_music_vendor(req, mult))
-        items.append(_cake_vendor(req, mult))
-
-    elif req.event_type in {
-        EventType.DIWALI_MELA,
-        EventType.NAVRATRI,
-        EventType.RWA_EVENT,
-        EventType.EID_CELEBRATION,
-    }:
-        items.append(_pandit_vendor(req, mult))
-        items.append(_music_vendor(req, mult))
-        items.append(_av_vendor(req, mult))
-        if req.guest_count > 200:
-            items.append(_permissions_vendor(req, mult))
-
-    elif req.event_type == EventType.COLLEGE_FEST:
-        items.append(_music_vendor(req, mult))
-        items.append(_av_vendor(req, mult))
-        items.append(_permissions_vendor(req, mult))
-
-    elif req.event_type == EventType.CORPORATE:
-        items.append(_av_vendor(req, mult))
-        items.append(_transport_vendor(req, mult))
+    items: list[VendorItem] = [
+        _venue_vendor(req, mult),
+        _caterer_vendor(req, mult),
+        _decorator_vendor(req, mult),
+        _photographer_vendor(req, mult),
+        _invitations_vendor(req, mult),
+    ]
+    items.extend(_get_event_specific_vendors(req, mult))
 
     # Outdoor events always need permissions
     if req.venue_type == VenueType.OUTDOOR and not any(

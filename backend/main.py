@@ -25,10 +25,10 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from backend.api.routes import router
-from backend.utils.config import get_settings
+from backend.config import get_settings
 
 if TYPE_CHECKING:
-    from backend.utils.config import Settings
+    from backend.config import Settings
 
 # ─────────────────────────────────────────────────────────────
 # Logging
@@ -123,15 +123,8 @@ def _configure_error_handlers(app: FastAPI) -> None:
         )
 
 
-def _configure_static_files(app: FastAPI, base_dir: Path) -> None:
-    """Mount static assets and SPA fallback routes."""
-    frontend_dir = base_dir / "public"
-    if not frontend_dir.exists():
-        frontend_dir = base_dir / "frontend"
-
-    if not frontend_dir.exists():
-        return
-
+def _mount_static_dirs(app: FastAPI, frontend_dir: Path) -> None:
+    """Mount assets and static folders if they exist."""
     assets_dir = frontend_dir / "assets"
     if assets_dir.exists():
         app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
@@ -140,14 +133,16 @@ def _configure_static_files(app: FastAPI, base_dir: Path) -> None:
     if static_dir.exists():
         app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
+
+def _register_spa_routes(app: FastAPI, frontend_dir: Path) -> None:
+    """Register root and fallback SPA navigation routes."""
+
     @app.get("/", include_in_schema=False)
     async def serve_frontend():
-        """Serve the main SPA index page."""
         return FileResponse(str(frontend_dir / "index.html"))
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_spa(full_path: str):
-        """Fallback route for SPA navigation or static file serving."""
         if full_path.startswith("api/"):
             return JSONResponse(status_code=404, content={"detail": "Not found"})
         file_path = frontend_dir / full_path
@@ -157,6 +152,18 @@ def _configure_static_files(app: FastAPI, base_dir: Path) -> None:
         if index_path.exists():
             return FileResponse(str(index_path))
         return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+
+
+def _configure_static_files(app: FastAPI, base_dir: Path) -> None:
+    """Mount static assets and SPA fallback routes."""
+    frontend_dir = base_dir / "public"
+    if not frontend_dir.exists():
+        frontend_dir = base_dir / "frontend"
+    if not frontend_dir.exists():
+        return
+
+    _mount_static_dirs(app, frontend_dir)
+    _register_spa_routes(app, frontend_dir)
 
 
 def create_app() -> FastAPI:

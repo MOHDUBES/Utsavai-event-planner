@@ -153,32 +153,18 @@ EVENT_TASKS: dict[str, list[tuple[int, str, str, str]]] = {
 # ─────────────────────────────────────────────────────────────
 
 
-def generate_timeline(req: EventRequest, today: date | None = None) -> Timeline:
-    """
-    Generate a backward-planned timeline from today to the event date.
-
-    Args:
-        req: The event request with event_date and event_type.
-        today: Override today's date (for testing).
-
-    Returns:
-        Timeline with tasks, warnings, and urgency flags.
-    """
-    if today is None:
-        today = date.today()
-
+def _evaluate_days_and_compression(req: EventRequest, today: date) -> tuple[int, bool, list[str]]:
+    """Determine days remaining, timeline compression, and initial date warnings."""
     days_until = (req.event_date - today).days
     warnings: list[str] = []
     is_compressed = False
 
-    # Warn on past dates
     if days_until < 0:
         warnings.append(
             f"⚠️ Event date {req.event_date} is in the past ({abs(days_until)} days ago)."
         )
         days_until = 0
 
-    # Compressed timeline warning
     if 0 < days_until < 30:
         is_compressed = True
         warnings.append(
@@ -188,30 +174,45 @@ def generate_timeline(req: EventRequest, today: date | None = None) -> Timeline:
     elif 30 <= days_until < 60:
         warnings.append(f"⚠️ Only {days_until} days until the event. Urgent booking required.")
 
-    # Get base tasks for event type
-    raw_tasks = EVENT_TASKS.get(req.event_type, GENERIC_TASKS)
+    return days_until, is_compressed, warnings
 
-    # Add outdoor-specific warnings
+
+def _gather_raw_tasks(req: EventRequest) -> list[tuple[int, str, str, str]]:
+    """Fetch base tasks and append outdoor venue specific logistics."""
+    raw_tasks = list(EVENT_TASKS.get(req.event_type, GENERIC_TASKS))
     if req.venue_type == VenueType.OUTDOOR:
-        raw_tasks = list(raw_tasks) + [
-            (
-                45,
-                "Apply for outdoor event permission / NOC from local authority",
-                "Permissions",
-                "critical",
-            ),
-            (14, "Arrange weather contingency (tent/tarpaulin for monsoon)", "Logistics", "high"),
-            (7, "Check weather forecast; have indoor backup plan ready", "Logistics", "medium"),
-        ]
+        raw_tasks.extend(
+            [
+                (
+                    45,
+                    "Apply for outdoor event permission / NOC from local authority",
+                    "Permissions",
+                    "critical",
+                ),
+                (
+                    14,
+                    "Arrange weather contingency (tent/tarpaulin for monsoon)",
+                    "Logistics",
+                    "high",
+                ),
+                (7, "Check weather forecast; have indoor backup plan ready", "Logistics", "medium"),
+            ]
+        )
+    return raw_tasks
 
-    # Filter tasks that are still achievable (i.e., days_before >= days_until would be past)
-    # For compressed timelines, include all tasks as urgent
+
+def _build_task_items(
+    raw_tasks: list[tuple[int, str, str, str]],
+    req: EventRequest,
+    today: date,
+    is_compressed: bool,
+    warnings: list[str],
+) -> list[TimelineTask]:
+    """Construct TimelineTask model instances with overdue flags and urgency."""
     tasks: list[TimelineTask] = []
     for days_before, task_desc, category, priority in raw_tasks:
         scheduled_at = req.event_date - timedelta(days=days_before)
         is_past = scheduled_at < today
-
-        # For past tasks in a compressed timeline, mark as urgent
         is_urgent = is_compressed and days_before > 0 and is_past
 
         label = "Day-of" if days_before == 0 else f"T-{days_before}"
@@ -228,23 +229,27 @@ def generate_timeline(req: EventRequest, today: date | None = None) -> Timeline:
                 task=task_desc,
                 category=category,
                 priority=priority,
-                is_urgent=is_urgent or (days_before <= 3 and days_before >= 0),
+                is_urgent=is_urgent or (0 <= days_before <= 3),
                 status="pending",
                 notes=_get_task_notes(task_desc, req),
             )
         )
-
-    # Limit overdue warnings to top 5
-    warnings = warnings[:7]
-
-    # Sort tasks: day-of first-ish? No — sort chronologically (largest days_before first)
     tasks.sort(key=lambda t: t.days_before, reverse=True)
+    return tasks
+
+
+def generate_timeline(req: EventRequest, today: date | None = None) -> Timeline:
+    """Generate a backward-planned timeline from today to the event date."""
+    current_date = today or date.today()
+    days_until, is_compressed, warnings = _evaluate_days_and_compression(req, current_date)
+    raw_tasks = _gather_raw_tasks(req)
+    tasks = _build_task_items(raw_tasks, req, current_date, is_compressed, warnings)
 
     return Timeline(
         event_date=req.event_date,
         days_until_event=max(0, days_until),
         tasks=tasks,
-        warnings=warnings,
+        warnings=warnings[:7],
         is_compressed=is_compressed,
     )
 
